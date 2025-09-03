@@ -59,10 +59,10 @@ casos = [
         "datos": "Historial de transacciones, patrones de comportamiento del usuario",
         "metrica": "Tasa de detección de fraudes, tasa de falsos positivos",
         "beneficios": "Reducción de pérdidas por fraudes, mejora en la seguridad de las transacciones, aumento de la confianza del cliente",
-        "referencia": [
-            "Bancolombia. (2024). Inteligencia artificial, machine learning, deep learning I Grupo Bancolombia. Bancolombia.com. Recuperado el 3 de septiembre de 2025, de https://blog.bancolombia.com/innovacion/inteligencia-artificial-machine-learning-deep-learning",
+        "referencia": [    
             "Centro de Competencias Inteligencia artificial. (s/f). Bancolombia. Recuperado el 3 de septiembre de 2025, de https://www.bancolombia.com/acerca-de/sala-prensa/noticias/innovacion/centro-de-competencias-inteligencia-artificial",
             "Bancolombia. (s/f). ¿Cuál es el futuro del big data e inteligencia artificial? Bancolombia.com. Recuperado el 3 de septiembre de 2025, de https://blog.bancolombia.com/innovacion/big-data-inteligencia-artificial/?utm_term=smb+manufacturing+software/?wtime=%7Bseek_to_second_number%7D"
+            "Bancolombia. (2024). Inteligencia artificial, machine learning, deep learning I Grupo Bancolombia. Bancolombia.com. Recuperado el 3 de septiembre de 2025, de https://blog.bancolombia.com/innovacion/inteligencia-artificial-machine-learning-deep-learning",
         ]
 }
 
@@ -82,3 +82,5 @@ def caso(id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
