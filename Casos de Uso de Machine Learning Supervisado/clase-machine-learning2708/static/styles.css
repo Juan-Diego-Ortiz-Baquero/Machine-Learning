@@ -9,7 +9,7 @@ body {
 
 /* Estiliza barra de navegación con gradiente y sombra */
 nav {
-  background: linear-gradient(90deg, #0f172a, #1e293b);
+  background: linear-gradient(90deg, #0f172a, #163568);
   color: #fff;
   padding: 0.75rem 1.5rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);

@@ -26,7 +26,7 @@
               {% for c in casos %}
               <li>
                 <a class="dropdown-item" href="{{ url_for('caso', id=c.id) }}">
-                  {% if c.sector == 'Entretenimiento' %}🎬{% elif c.sector == 'Comercio electrónico' %}🛒{% elif c.sector == 'Finanzas' %}💳{% elif c.sector == 'Alimentación' %}🍽️{% endif %}
+                  {% if c.sector == 'Entretenimiento' %}🎬{% elif c.sector == 'Salud' %}⚕️{% elif c.sector == 'Finanzas' %}💳{% elif c.sector == 'Consumo masivo' %}🏪{% endif %}
                   {{ c.sector }} — {{ c.problema }}
                 </a>
               </li>
