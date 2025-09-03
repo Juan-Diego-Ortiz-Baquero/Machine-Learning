@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <!-- Título dinámico basado en el problema del caso -->
+  <title>{{ caso.problema }}</title>
+  <!-- Conecta hoja de estilos personalizada -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <!-- Navegación simple para volver al índice -->
+  <nav><a href="{{ url_for('index') }}">Inicio</a></nav>
+
+  <!-- Contenido principal con detalles del caso -->
+  <main>
+    <!-- Título principal con el problema del caso -->
+    <h1>{{ caso.problema }}</h1>
+
+    <!-- Información contextual del caso -->
+    <p><strong>Sector y organización:</strong> {{ caso.sector }} — {{ caso.organizacion }}</p>
+    <p><strong>Tipo de algoritmo:</strong> {{ caso.algoritmo }}</p>
+    <p><strong>Tarea supervisada:</strong> {{ caso.tarea }}</p>
+    <p><strong>Datos:</strong> {{ caso.datos }}</p>
+    <p><strong>Métrica de evaluación:</strong> {{ caso.metrica }}</p>
+    <p><strong>Resultados y beneficios:</strong> {{ caso.beneficios }}</p>
+
+    <!-- Lista de referencias en formato APA -->
+    <h2>Referencias en APA</h2>
+    <ul>
+      {% for ref in caso.referencia %}
+        <!-- Renderiza cada referencia como ítem de lista -->
+        <li>{{ ref }}</li>
+      {% endfor %}
+    </ul>
+  </main>
+
+</body>
+</html>
