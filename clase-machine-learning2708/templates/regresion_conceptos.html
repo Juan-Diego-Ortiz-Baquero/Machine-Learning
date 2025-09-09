@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Regresión lineal — Conceptos básicos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- Navbar con split button en Casos -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('home') }}">ML</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Inicio</a></li>
+
+          <!-- Casos: enlace + flechita -->
+          <li class="nav-item dropdown d-flex align-items-center">
+            <a class="nav-link" href="{{ url_for('casos_view') }}">Casos</a>
+            <a class="nav-link dropdown-toggle dropdown-toggle-split px-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </a>
+            <ul class="dropdown-menu">
+              {% for c in casos %}
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('caso', id=c.id) }}">
+                    {{ c.sector }} — {{ c.problema }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          <!-- Regresión lineal -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">Regresión lineal</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item active" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1 class="mb-4">Conceptos básicos de regresión lineal</h1>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Definición</h5>
+        <p>
+          La regresión lineal es un método estadístico que modela la relación entre una variable dependiente
+          y una o más variables independientes, asumiendo que esta relación es lineal.  
+          En este caso, buscamos predecir la <strong>nota final</strong> de un estudiante a partir de
+          <em>horas de estudio</em> y <em>horas de sueño</em>.
+        </p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Supuestos habituales</h5>
+        <ul class="mb-0">
+          <li><strong>Linealidad:</strong> la relación entre las variables independientes y la dependiente es lineal.</li>
+          <li><strong>Independencia:</strong> las observaciones y los errores son independientes entre sí.</li>
+          <li><strong>Homoscedasticidad:</strong> la varianza de los errores es constante para todos los valores de las variables independientes.</li>
+          <li><strong>Normalidad del error:</strong> los errores se distribuyen normalmente con media cero.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Referencias (APA 7)</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          {% for ref in referencias %}
+            <li>{{ ref }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
