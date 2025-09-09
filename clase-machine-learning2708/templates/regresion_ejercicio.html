@@ -57,6 +57,26 @@
       R² del ajuste: {{ descripcion_dataset.r2 }}.
     </p>
 
+    <!-- Tarjeta con explicación del dataset -->
+    <div class="card mb-4 border-info">
+      <div class="card-header bg-info text-white">
+        Explicación del dataset
+      </div>
+      <div class="card-body">
+        <p class="mb-0">{{ descripcion_texto }}</p>
+      </div>
+    </div>
+
+    <!-- Tarjeta con flujo general -->
+    <div class="card mb-4 border-secondary">
+      <div class="card-header bg-secondary text-white">
+        Flujo general del modelo
+      </div>
+      <div class="card-body">
+        <pre class="mb-0">{{ workflow_description }}</pre>
+      </div>
+    </div>
+
     <div class="row g-4">
       <div class="col-12 col-lg-7">
         <div class="card h-100">

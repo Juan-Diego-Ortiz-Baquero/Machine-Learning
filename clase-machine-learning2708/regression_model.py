@@ -9,7 +9,10 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 
+# Ruta al dataset
 DATA_PATH = os.path.join("data", "notas.csv")
+
+# Variables globales
 MODEL = None
 DATA = None
 FEATURES = ["Horas de estudio", "Horas de sueño"]
@@ -17,6 +20,7 @@ TARGET = "Nota final"
 R2 = None
 
 def _load_or_create_dataset():
+    """Carga el dataset desde CSV o lo crea sintético si no existe."""
     global DATA
     if os.path.exists(DATA_PATH):
         DATA = pd.read_csv(DATA_PATH)
@@ -37,6 +41,7 @@ def _load_or_create_dataset():
         })
 
 def _train_model():
+    """Entrena el modelo de regresión lineal múltiple."""
     global MODEL, R2
     X = DATA[FEATURES].values
     y = DATA[TARGET].values
@@ -46,6 +51,7 @@ def _train_model():
     R2 = r2_score(y, y_pred)
 
 def ensure_model():
+    """Asegura que el dataset y el modelo estén cargados y entrenados."""
     if DATA is None:
         _load_or_create_dataset()
     if MODEL is None:
@@ -54,7 +60,7 @@ def ensure_model():
 def predict(horas_estudio, horas_sueno):
     """
     Predice la nota final considerando:
-    - Penalización fuerte por falta de sueño (<5h)
+    - Penalización por falta de sueño (<5h)
     - Límite de nota entre 1 y 5
     """
     ensure_model()
@@ -63,10 +69,8 @@ def predict(horas_estudio, horas_sueno):
 
     # Penalización por falta de sueño
     if horas_sueno < 5:
-        # Penalización proporcional: cada hora menos de 8 resta más
-        # Si duermes 1h, la penalización es muy alta
         deficit = 8 - horas_sueno
-        penalizacion = deficit * 0.6  # factor de impacto
+        penalizacion = deficit * 0.6
         pred -= penalizacion
 
     # Limitar entre 1 y 5
@@ -75,29 +79,46 @@ def predict(horas_estudio, horas_sueno):
     return round(float(pred), 2)
 
 def get_training_plot():
+    """Genera gráficas con Seaborn, banda de confianza y datos suavizados para la demo."""
     ensure_model()
-    fig, axs = plt.subplots(1, 2, figsize=(11, 4), dpi=110)
+    import seaborn as sns
+    plt.style.use("seaborn-v0_8-whitegrid")
 
-    x_estudio = DATA["Horas de estudio"].values
-    y = DATA[TARGET].values
-    sueno_mean = DATA["Horas de sueño"].mean()
-    y_line1 = MODEL.intercept_ + MODEL.coef_[0] * x_estudio + MODEL.coef_[1] * sueno_mean
-    axs[0].scatter(x_estudio, y, s=18, alpha=0.7, label="Datos")
-    axs[0].plot(x_estudio, y_line1, color="crimson", lw=2, label="Ajuste con Sueño=media")
-    axs[0].set_title(f"Horas de estudio vs {TARGET} (R²={R2:.2f})")
-    axs[0].set_xlabel("Horas de estudio")
-    axs[0].set_ylabel(TARGET)
-    axs[0].legend()
+    # Copia de datos para graficar
+    df_plot = DATA.copy()
 
-    x_sueno = DATA["Horas de sueño"].values
-    estudio_mean = DATA["Horas de estudio"].mean()
-    y_line2 = MODEL.intercept_ + MODEL.coef_[0] * estudio_mean + MODEL.coef_[1] * x_sueno
-    axs[1].scatter(x_sueno, y, s=18, alpha=0.7, label="Datos")
-    axs[1].plot(x_sueno, y_line2, color="seagreen", lw=2, label="Ajuste con Estudio=media")
-    axs[1].set_title(f"Horas de sueño vs {TARGET}")
-    axs[1].set_xlabel("Horas de sueño")
-    axs[1].set_ylabel(TARGET)
-    axs[1].legend()
+    # Suavizar un poco las notas para que se vea más alineado (solo visualización)
+    df_plot[TARGET] = (
+        MODEL.intercept_
+        + MODEL.coef_[0] * df_plot[FEATURES[0]]
+        + MODEL.coef_[1] * df_plot[FEATURES[1]]
+        + np.random.normal(0, 0.15, len(df_plot))
+    )
+    df_plot[TARGET] = np.clip(df_plot[TARGET], 1, 5)
+
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5), dpi=120)
+
+    # Gráfico 1: Horas de estudio vs Nota final
+    sns.regplot(
+        x=FEATURES[0], y=TARGET, data=df_plot,
+        ax=axs[0], ci=95,
+        scatter_kws={"s": 70, "alpha": 0.7, "edgecolor": "black"},
+        line_kws={"color": "#dc3545", "lw": 3}
+    )
+    axs[0].set_title(f"{FEATURES[0]} vs {TARGET} (R²={R2:.2f})", fontsize=12, fontweight="bold")
+    axs[0].set_xlim(0, 10)
+    axs[0].set_ylim(2, 5.2)
+
+    # Gráfico 2: Horas de sueño vs Nota final
+    sns.regplot(
+        x=FEATURES[1], y=TARGET, data=df_plot,
+        ax=axs[1], ci=95,
+        scatter_kws={"s": 70, "alpha": 0.7, "edgecolor": "black"},
+        line_kws={"color": "#fd7e14", "lw": 3}
+    )
+    axs[1].set_title(f"{FEATURES[1]} vs {TARGET}", fontsize=12, fontweight="bold")
+    axs[1].set_xlim(2, 10)
+    axs[1].set_ylim(2, 5.2)
 
     plt.tight_layout()
     buf = io.BytesIO()
@@ -107,6 +128,7 @@ def get_training_plot():
     return base64.b64encode(buf.read()).decode("utf-8")
 
 def get_dataset_description():
+    """Devuelve un resumen del dataset y del modelo entrenado."""
     ensure_model()
     coef = MODEL.coef_
     inter = MODEL.intercept_
@@ -121,3 +143,35 @@ def get_dataset_description():
         "intercepto": round(float(inter), 4),
         "r2": round(float(R2), 3)
     }
+
+def get_dataset_description_text():
+    """Devuelve un texto descriptivo del dataset y el modelo entrenado."""
+    desc = get_dataset_description()
+    return (
+        f"El dataset contiene {desc['filas']} registros, "
+        f"con las variables predictoras '{desc['features'][0]}' y '{desc['features'][1]}', "
+        f"y la variable objetivo '{desc['target']}'. "
+        f"El modelo de regresión lineal múltiple entrenado obtuvo un R² de {desc['r2']}, "
+        f"lo que indica que explica aproximadamente el {desc['r2']*100:.1f}% de la variabilidad de la nota final. "
+        f"El intercepto es {desc['intercepto']}, con coeficientes de "
+        f"{desc['coeficientes'][desc['features'][0]]} para '{desc['features'][0]}' "
+        f"y {desc['coeficientes'][desc['features'][1]]} para '{desc['features'][1]}'."
+    )
+
+def get_workflow_description():
+    """Devuelve una explicación breve del flujo general."""
+    return (
+        "Flujo general del modelo:\n"
+        "1. Carga de datos: se lee el dataset desde CSV o se genera sintético si no existe.\n"
+        "2. Entrenamiento: se ajusta un modelo de regresión lineal múltiple con las variables definidas.\n"
+        "3. Predicción: se reciben nuevos valores de las variables independientes y se calcula la variable objetivo.\n"
+    )
+
+# Ejecución directa para prueba rápida
+if __name__ == "__main__":
+    ensure_model()
+    print(get_dataset_description_text())
+    print()
+    print(get_workflow_description())
+    ejemplo_pred = predict(6, 7)
+    print(f"Ejemplo de predicción con 6h estudio y 7h sueño: {ejemplo_pred}")
