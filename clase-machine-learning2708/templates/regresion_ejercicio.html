@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Regresión lineal — Ejercicio práctico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- Navbar con split button en Casos -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('home') }}">ML</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Inicio</a></li>
+
+          <!-- Casos: enlace + flechita alineados -->
+          <li class="nav-item dropdown d-flex align-items-center">
+            <a class="nav-link" href="{{ url_for('casos_view') }}">Casos</a>
+            <a class="nav-link dropdown-toggle dropdown-toggle-split px-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </a>
+            <ul class="dropdown-menu">
+              {% for c in casos %}
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('caso', id=c.id) }}">
+                    {{ c.sector }} — {{ c.problema }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          <!-- Regresión lineal -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">Regresión lineal</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
+              <li><a class="dropdown-item active" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1 class="mb-3">Ejercicio práctico</h1>
+    <p class="text-muted">
+      Modelo entrenado para predecir la <strong>nota final</strong> en función de las
+      <em>horas de estudio</em> y <em>horas de sueño</em>.<br>
+      Entrenado con {{ descripcion_dataset.filas }} registros.<br>
+      R² del ajuste: {{ descripcion_dataset.r2 }}.
+    </p>
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-7">
+        <div class="card h-100">
+          <div class="card-header">Datos de entrenamiento y línea de regresión</div>
+          <div class="card-body">
+            <img class="img-fluid" src="data:image/png;base64, {{ plot_png }}" alt="Gráfico de entrenamiento">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-5">
+        <div class="card h-100">
+          <div class="card-header">Ingresar datos nuevos</div>
+          <div class="card-body">
+            <form method="POST" action="{{ url_for('regresion_ejercicio') }}">
+              <div class="mb-3">
+                <label class="form-label">Horas de estudio</label>
+                <input type="number" step="any" class="form-control" name="x1" placeholder="Ej: 5" value="{{ valores.x1 if valores }}">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Horas de sueño</label>
+                <input type="number" step="any" class="form-control" name="x2" placeholder="Ej: 8" value="{{ valores.x2 if valores }}">
+              </div>
+              <button type="submit" class="btn btn-primary">Predecir</button>
+            </form>
+
+            {% if prediccion is not none %}
+              <hr>
+              <div class="alert alert-info mb-0">
+                <strong>Predicción de nota final:</strong> {{ prediccion }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-header">Ecuación estimada</div>
+          <div class="card-body">
+            <code>
+              {{ descripcion_dataset.target }} =
+              {{ descripcion_dataset.intercepto }}
+              + ({{ descripcion_dataset.coeficientes[descripcion_dataset.features[0]] }})·{{ descripcion_dataset.features[0] }}
+              + ({{ descripcion_dataset.coeficientes[descripcion_dataset.features[1]] }})·{{ descripcion_dataset.features[1] }}
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bootstrap bundle (incluye Popper para dropdowns) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
