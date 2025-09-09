@@ -3,31 +3,58 @@
 <head>
   <meta charset="utf-8">
   <title>{{ caso.problema }}</title>
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Estilos personalizados -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body class="bg-light">
 
-  <!-- Barra de navegación -->
+  <!-- Navbar unificada con menú desplegable de Casos -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{{ url_for('index') }}">ML Supervisado</a>
-      <a class="nav-link text-white" href="{{ url_for('index') }}">Inicio</a>
+      <a class="navbar-brand" href="{{ url_for('home') }}">ML</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Inicio</a></li>
+
+          <!-- Menú desplegable de Casos -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">Casos</a>
+            <ul class="dropdown-menu">
+              {% for c in casos %}
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('caso', id=c.id) }}">
+                    {% if c.sector == 'Entretenimiento' %}🎬{% elif c.sector == 'Comercio electrónico' %}🛒{% elif c.sector == 'Finanzas' %}💳{% elif c.sector == 'Alimentación' %}🍽️{% elif c.sector == 'Salud' %}🩺{% elif c.sector == 'Consumo masivo' %}📦{% endif %}
+                    {{ c.sector }} — {{ c.problema }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          <!-- Menú desplegable de Regresión lineal -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Regresión lineal</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 
   <main class="container">
     {% if caso.contenido_html %}
-      <!-- Renderiza el bloque narrativo tal cual -->
       <div class="card mb-4">
         <div class="card-body">
           {{ caso.contenido_html | safe }}
         </div>
       </div>
     {% else %}
-      <!-- Formato estándar si no hay contenido narrativo -->
       <div class="card mb-4">
         <div class="card-body">
           <h1 class="card-title h3">{{ caso.problema }}</h1>
@@ -40,34 +67,7 @@
         </div>
       </div>
 
-      {% if caso.por_que_supervisado or caso.features_clave or caso.validacion or caso.manejo_desbalance %}
-      <div class="card mb-4">
-        <div class="card-header">Profundización técnica</div>
-        <div class="card-body">
-          {% if caso.por_que_supervisado %}
-            <p><strong>Por qué es supervisado:</strong> {{ caso.por_que_supervisado }}</p>
-          {% endif %}
-
-          {% if caso.features_clave %}
-            <h5>Características clave</h5>
-            <ul>
-              {% for f in caso.features_clave %}
-                <li>{{ f }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
-
-          {% if caso.validacion %}
-            <p><strong>Estrategia de validación:</strong> {{ caso.validacion }}</p>
-          {% endif %}
-
-          {% if caso.manejo_desbalance %}
-            <p><strong>Manejo del desbalance:</strong> {{ caso.manejo_desbalance }}</p>
-          {% endif %}
-        </div>
-      </div>
-      {% endif %}
-
+      {% if caso.referencia %}
       <div class="card">
         <div class="card-header">Referencias en APA</div>
         <div class="card-body">
@@ -78,10 +78,10 @@
           </ul>
         </div>
       </div>
+      {% endif %}
     {% endif %}
   </main>
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
