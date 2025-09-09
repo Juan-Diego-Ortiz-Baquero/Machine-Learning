@@ -28,11 +28,13 @@ def regresion_conceptos():
 
 @app.route("/regresion-lineal/ejercicio", methods=["GET", "POST"])
 def regresion_ejercicio():
+    # Asegurar que el modelo esté cargado y entrenado
     rl.ensure_model()
     plot_png = rl.get_training_plot()
     prediccion = None
     valores = None
 
+    # Si el usuario envía datos para predecir
     if request.method == "POST":
         try:
             horas_estudio = float(request.form.get("x1"))
@@ -42,14 +44,20 @@ def regresion_ejercicio():
         except (TypeError, ValueError):
             prediccion = "Error: ingresa números válidos."
 
+    # Obtener descripciones y flujo general
     descripcion_dataset = rl.get_dataset_description()
+    descripcion_texto = rl.get_dataset_description_text()
+    workflow_description = rl.get_workflow_description()
 
+    # Renderizar plantilla con todas las variables necesarias
     return render_template(
         "regresion_ejercicio.html",
         plot_png=plot_png,
         prediccion=prediccion,
         valores=valores,
         descripcion_dataset=descripcion_dataset,
+        descripcion_texto=descripcion_texto,
+        workflow_description=workflow_description,
         casos=casos
     )
 
