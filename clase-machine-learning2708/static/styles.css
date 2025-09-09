@@ -1,0 +1,127 @@
+/* Define fuente base, colores y espaciado general para toda la app */
+body {
+  font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+  margin: 0;
+  background-color: #f8fafc;
+  color: #0f172a;
+  line-height: 1.6;
+}
+
+/* Estiliza barra de navegación con gradiente y sombra */
+nav {
+  background: linear-gradient(90deg, #0f172a, #163568);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Configura menú principal como lista horizontal con espaciado */
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.menu > li {
+  position: relative;
+}
+
+/* Estilo para enlaces del menú principal con transición de color */
+.menu > li > a {
+  color: #f1f5f9;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.menu > li > a:hover {
+  color: #38bdf8;
+}
+
+/* Define submenú oculto con estilo flotante y sombreado */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1e293b;
+  padding: 0.5rem 0;
+  list-style: none;
+  min-width: 250px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Estilo para enlaces dentro del submenú */
+.submenu li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #e2e8f0;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.submenu li a:hover {
+  background: #334155;
+}
+
+/* Muestra submenú al hacer hover sobre el elemento padre */
+.menu > li:hover .submenu {
+  display: block;
+}
+
+/* Estiliza contenedor principal con padding, sombra y centrado */
+main {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-top: 1.5rem;
+}
+
+/* Estilo para títulos principales */
+h1 {
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+
+/* Ajustes para listas y espaciado entre ítems */
+ul {
+  padding-left: 1.2rem;
+}
+
+ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* Estilo para enlaces generales con color y hover */
+a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+/* Activar dropdown con hover solo en escritorio */
+@media (min-width: 992px) {
+  .nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Transición suave para el menú */
+.dropdown-menu {
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+  visibility: hidden;
+}
+
