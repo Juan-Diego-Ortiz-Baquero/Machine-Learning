@@ -20,9 +20,9 @@ def caso(id):
 @app.route("/regresion-lineal/conceptos")
 def regresion_conceptos():
     referencias = [
-        "Montgomery, D. C., Peck, E. A., & Vining, G. G. (2021). Introduction to Linear Regression Analysis. Wiley.",
-        "James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). An Introduction to Statistical Learning (2nd ed.). Springer.",
-        "Wooldridge, J. M. (2016). Introductory Econometrics: A Modern Approach (6th ed.). Cengage."
+        "Statistics Easily. (s. f.). Supuestos en regresión lineal. Recuperado el 9 de septiembre de 2025, de https://es.statisticseasily.com/supuestos-en-regresión-lineal",
+        "Universidad de los Andes. (s. f.). Regresión lineal. Recuperado el 9 de septiembre de 2025, de https://programas.uniandes.edu.co/blog/regresion-lineal",
+        "Probabilidad y Estadística. (s. f.). Regresión lineal. Recuperado el 9 de septiembre de 2025, de https://www.probabilidadyestadistica.net/regresion-lineal"
     ]
     return render_template("regresion_conceptos.html", referencias=referencias, casos=casos)
 
