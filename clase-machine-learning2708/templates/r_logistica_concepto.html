@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Regresión logística — Conceptos básicos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('home') }}">ML</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('casos_view') }}">Casos</a></li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Regresión lineal</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">Regresión logística</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item active" href="{{ url_for('r_logistica_conceptos') }}">Conceptos básicos</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('r_logistica_ejercicio') }}">Ejercicio práctico</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1 class="mb-4">Conceptos básicos de regresión logística</h1>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Definición</h5>
+        <p>
+          La regresión logística es un modelo estadístico usado para problemas de clasificación, especialmente cuando la variable objetivo es binaria (0/1). Modela la <strong>probabilidad</strong> de que ocurra el evento positivo como una función de las variables independientes mediante la <strong>función sigmoide</strong>.
+        </p>
+        <p>
+          En términos de <em>logit</em>, el modelo expresa el <strong>logaritmo de las razones de momios</strong> como lineal en las variables: logit(p) = ln(p/(1−p)) = β₀ + β₁x₁ + … + βₖxₖ.
+        </p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Tipos y usos</h5>
+        <ul class="mb-0">
+          <li><strong>Binaria:</strong> dos categorías exclusivas (0/1).</li>
+          <li><strong>Multinomial:</strong> más de dos categorías sin orden.</li>
+          <li><strong>Ordinal:</strong> categorías con orden natural.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Comparación con regresión lineal</h5>
+        <p>
+          La regresión lineal predice valores continuos; la logística predice probabilidades y clasifica según un umbral.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Referencias (APA 7)</div>
+      <div class="card-body">
+        <ul class="mb-0">
+          {% for ref in referencias %}
+            <li>{{ ref }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

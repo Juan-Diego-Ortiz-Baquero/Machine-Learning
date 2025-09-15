@@ -2,74 +2,53 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Casos de uso ML supervisado</title>
+  <title>Machine Learning — Portada</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body class="bg-light">
 
-  <!-- Navbar unificada con menú desplegable de Casos -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{{ url_for('home') }}">ML</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Inicio</a></li>
+  <!-- Navbar unificada -->
+  {% include 'navbar.html' %}
 
-          <!-- Menú desplegable de Casos -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">Casos</a>
-            <ul class="dropdown-menu">
-              {% for c in casos %}
-                <li>
-                  <a class="dropdown-item" href="{{ url_for('caso', id=c.id) }}">
-                    {% if c.sector == 'Entretenimiento' %}🎬{% elif c.sector == 'Comercio electrónico' %}🛒{% elif c.sector == 'Finanzas' %}💳{% elif c.sector == 'Alimentación' %}🍽️{% elif c.sector == 'Salud' %}🩺{% elif c.sector == 'Consumo masivo' %}📦{% endif %}
-                    {{ c.sector }} — {{ c.problema }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-          </li>
+  <main class="container py-5 text-center">
 
-          <!-- Menú desplegable de Regresión lineal -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Regresión lineal</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
-            </ul>
-          </li>
-        </ul>
+    <!-- Imagen de la Universidad -->
+    <img src="{{ url_for('static', filename='udec_logo.png') }}" alt="Universidad de Cundinamarca" class="mb-4" style="max-width: 400px;">
+
+    <!-- Título más grande -->
+    <h1 class="display-3 fw-bold mb-5">MACHINE LEARNING</h1>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <a href="{{ url_for('casos_view') }}" class="text-decoration-none">
+          <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+              <h2 class="h4">Casos de ML supervisado</h2>
+              <p class="text-muted">Explora casos reales con métricas y referencias.</p>
+            </div>
+          </div>
+        </a>
       </div>
-    </div>
-  </nav>
-
-  <main class="container">
-    <h1 class="mb-4">Casos de uso de Machine Learning supervisado</h1>
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Problema</th>
-            <th>Algoritmo</th>
-            <th>Sector</th>
-            <th>Ver más</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for c in casos %}
-          <tr>
-            <td>{{ c.problema }}</td>
-            <td>{{ c.algoritmo }}</td>
-            <td>{{ c.sector }}</td>
-            <td><a href="{{ url_for('caso', id=c.id) }}" class="btn btn-sm btn-outline-primary">Detalles</a></td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <div class="col-md-4">
+        <a href="{{ url_for('regresion_conceptos') }}" class="text-decoration-none">
+          <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+              <h2 class="h4">Regresión lineal</h2>
+              <p class="text-muted">Ejemplo práctico de predicción con sklearn.</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a href="{{ url_for('r_logistica_conceptos') }}" class="text-decoration-none">
+          <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+              <h2 class="h4">Regresión logística</h2>
+              <p class="text-muted">Modelo para variables binarias con probabilidad y umbral.</p>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
   </main>
 
