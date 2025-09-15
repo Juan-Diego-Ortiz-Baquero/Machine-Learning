@@ -8,27 +8,7 @@
 <body class="bg-light">
 
   <!-- Navbar unificada -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{{ url_for('home') }}">ML</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link active" href="{{ url_for('home') }}">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('casos_view') }}">Casos</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Regresión lineal</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  {% include 'navbar.html' %}
 
   <main class="container py-5 text-center">
 
@@ -39,7 +19,7 @@
     <h1 class="display-3 fw-bold mb-5">MACHINE LEARNING</h1>
 
     <div class="row g-4">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <a href="{{ url_for('casos_view') }}" class="text-decoration-none">
           <div class="card shadow-sm h-100">
             <div class="card-body text-center">
@@ -49,12 +29,22 @@
           </div>
         </a>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <a href="{{ url_for('regresion_conceptos') }}" class="text-decoration-none">
           <div class="card shadow-sm h-100">
             <div class="card-body text-center">
               <h2 class="h4">Regresión lineal</h2>
               <p class="text-muted">Ejemplo práctico de predicción con sklearn.</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a href="{{ url_for('r_logistica_conceptos') }}" class="text-decoration-none">
+          <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+              <h2 class="h4">Regresión logística</h2>
+              <p class="text-muted">Modelo para variables binarias con probabilidad y umbral.</p>
             </div>
           </div>
         </a>
