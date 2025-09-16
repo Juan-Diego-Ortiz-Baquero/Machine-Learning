@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
 from casos_data import casos
 import regression_model as rl
+import regression_logistica as rlog
+import base64
+import os
 
 app = Flask(__name__)
 
@@ -16,7 +19,7 @@ def home():
 # ---------------------------
 @app.route("/casos")
 def casos_view():
-    return render_template("index.html", casos=casos, active_page='casos')
+    return render_template("casos.html", casos=casos, active_page='casos')
 
 @app.route("/caso/<id>")
 def caso(id):
@@ -37,7 +40,6 @@ def regresion_conceptos():
 
 @app.route("/regresion-lineal/ejercicio", methods=["GET", "POST"])
 def regresion_ejercicio():
-    # Asegurar que el modelo esté cargado y entrenado
     rl.ensure_model()
     plot_png = rl.get_training_plot()
     prediccion = None
@@ -80,10 +82,51 @@ def r_logistica_conceptos():
     ]
     return render_template("r_logistica_concepto.html", referencias=referencias, casos=casos, active_page='r_logistica_conceptos')
 
-@app.route("/regresion-logistica/ejercicio")
+@app.route("/regresion-logistica/ejercicio", methods=["GET", "POST"])
 def r_logistica_ejercicio():
-    # Por ahora solo muestra un placeholder o plantilla vacía
-    return render_template("r_logistica_ejercicio.html", casos=casos, active_page='r_logistica_ejercicio')
+    rlog.ensure_model()
+    workflow_description = rlog.workflow_description
+    descripcion_dataset = rlog.get_dataset_description()
+
+    # Ruta absoluta a la imagen de la matriz de confusión
+    confusion_path = os.path.join(os.path.dirname(__file__), "confusion_matrix.png")
+    with open(confusion_path, "rb") as image_file:
+        confusion_png = base64.b64encode(image_file.read()).decode("utf-8")
+
+    prediccion = None
+    valores = None
+
+    if request.method == "POST":
+        try:
+            valores = {
+                "Study_Time": float(request.form.get("Study_Time")),
+                "Number_of_Failures": float(request.form.get("Number_of_Failures")),
+                "Final_Grade": float(request.form.get("Final_Grade")),
+                "School_Support": request.form.get("School_Support"),
+                "Family_Support": request.form.get("Family_Support"),
+                "Internet_Access": request.form.get("Internet_Access"),
+                "Wants_Higher_Education": request.form.get("Wants_Higher_Education")
+            }
+
+            label, prob = rlog.predict_label(valores)
+            prediccion = {
+                "label": label,
+                "probabilidad": f"{prob:.4f}"
+            }
+
+        except (TypeError, ValueError):
+            prediccion = {"label": "Error", "probabilidad": "Datos inválidos"}
+
+    return render_template(
+        "r_logistica_ejercicio.html",
+        workflow_description=workflow_description,
+        descripcion_dataset=descripcion_dataset,
+        confusion_png=confusion_png,
+        prediccion=prediccion,
+        valores=valores,
+        casos=casos,
+        active_page='r_logistica_ejercicio'
+    )
 
 # ---------------------------
 # MAIN
