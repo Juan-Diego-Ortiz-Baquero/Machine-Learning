@@ -32,7 +32,7 @@
         <p class="mb-1">
           Variables originales: Promedio académico, Asistencia a clases, Horas de estudio, Carrera (categórica).<br>
           Objetivo: ¿Abandona el estudiante? (Sí/No).<br>
-          Autores del trabajo: Laura Bernal, Santiago Valenzuela, Julieth Alvarado, Juan Ortiz.
+          Autor del trabajo: Juan Ortiz.
         </p>
         <p class="mb-1">
           <em>Nota:</em> En el dataset original de Kaggle no existe la variable 'Promedio académico' tal cual,
@@ -57,12 +57,69 @@
     </div>
 
     <div class="row g-4">
+    <!-- Tarjeta: Reporte de clasificación -->
+<div class="card mb-4 border-success">
+  <div class="card-header bg-success text-white">Reporte de clasificación</div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-sm table-striped table-bordered align-middle mb-0">
+        <thead class="table-secondary">
+          <tr>
+            <th>Clase</th>
+            <th>Precisión</th>
+            <th>Recall</th>
+            <th>F1-score</th>
+            <th>Support</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if report %}
+            {% for clase, valores in report.items() %}
+              {% if clase not in ['accuracy', 'macro avg', 'weighted avg'] %}
+              <tr>
+                <td>{{ clase }}</td>
+                <td>{{ '%.3f'|format(valores['precision']) }}</td>
+                <td>{{ '%.3f'|format(valores['recall']) }}</td>
+                <td>{{ '%.3f'|format(valores['f1-score']) }}</td>
+                <td>{{ valores['support'] }}</td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+            {% if report.get('accuracy') %}
+            <tr class="table-light">
+              <td><strong>Accuracy</strong></td>
+              <td colspan="3"></td>
+              <td>{{ '%.3f'|format(report['accuracy']) }}</td>
+            </tr>
+            {% endif %}
+            {% for avg in ['macro avg', 'weighted avg'] %}
+              {% if report.get(avg) %}
+              <tr>
+                <td>{{ avg }}</td>
+                <td>{{ '%.3f'|format(report[avg]['precision']) }}</td>
+                <td>{{ '%.3f'|format(report[avg]['recall']) }}</td>
+                <td>{{ '%.3f'|format(report[avg]['f1-score']) }}</td>
+                <td>{{ report[avg]['support'] }}</td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="5" class="text-muted">No hay datos de reporte.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
       <!-- Visualización -->
       <div class="col-12 col-lg-7">
         <div class="card h-100">
           <div class="card-header">Matriz de confusión</div>
           <div class="card-body">
             <img class="img-fluid" src="data:image/png;base64, {{ confusion_png }}" alt="Matriz de confusión">
+            <div class="text-muted small mt-2">
+              Filas = Reales (0 = No, 1 = Sí) · Columnas = Predicho (0 = No, 1 = Sí)
+            </div>  
           </div>
         </div>
       </div>
@@ -78,8 +135,8 @@
                 <input type="number" step="any" class="form-control" name="Study_Time" placeholder="Ej: 3" value="{{ valores.Study_Time if valores }}">
               </div>
               <div class="mb-3">
-                <label class="form-label">Número de fallos previos (Number_of_Failures)</label>
-                <input type="number" step="any" class="form-control" name="Number_of_Failures" placeholder="Ej: 1" value="{{ valores.Number_of_Failures if valores }}">
+                <label class="form-label">Número de ausencias (Number_of_Absences)</label>
+                <input type="number" step="any" class="form-control" name="Number_of_Absences" placeholder="Ej: 1" value="{{ valores.Number_of_Absences if valores }}">
               </div>
               <div class="mb-3">
                 <label class="form-label">Nota final (Final_Grade)</label>
@@ -118,11 +175,13 @@
 
             {% if prediccion is not none %}
               <hr>
-              <div class="alert alert-warning mb-0">
-                <strong>¿Abandona?</strong> {{ prediccion.label }}<br>
-                <small>Probabilidad estimada: {{ prediccion.probabilidad }}</small>
+              <div class="text-center">
+                <div class="h4 mb-1">Predicción:</div>
+                <div class="display-6">{{ prediccion.label }}</div>
+                <div class="text-muted">Probabilidad: {{ prediccion.probabilidad }}</div>
               </div>
             {% endif %}
+
           </div>
         </div>
       </div>

@@ -25,10 +25,13 @@ if data.empty or data.shape[1] < 2:
 # -------------------------------------------------------
 # Variables adaptadas al dataset real
 features = [
-    'Final_Grade',          # Reemplazo de 'Promedio académico'
-    'Number_of_Absences',   # Usada como aproximación a 'Asistencia'
-    'Study_Time',           # Horas de estudio
-    'School_Support'        # Reemplazo de 'Carrera' (categórica) por variable relevante disponible
+    'Study_Time',               # Horas de estudio
+    'Number_of_Absences',       # Usada como aproximación a 'Asistencia'
+    'Final_Grade',              # Reemplazo de 'Promedio académico'
+    'School_Support',           # Reemplazo de 'Carrera' (categórica) por variable relevante disponible
+    'Family_Support',           # Apoyo familiar
+    'Internet_Access',          # Acceso a internet
+    'Wants_Higher_Education'    # Deseo de educación superior
 ]
 target = 'Dropped_Out'
 
@@ -75,8 +78,13 @@ def evaluate():
 
     # Guardar matriz de confusión como imagen
     plt.figure(figsize=(6, 4))
-    sns.heatmap(matrix, annot=True, fmt='d', cmap='Blues', cbar=False,
-                xticklabels=['No', 'Sí'], yticklabels=['No', 'Sí'])
+    sns.heatmap(matrix, 
+                annot=True, 
+                fmt='d', 
+                cmap='Blues', 
+                cbar=True,
+                xticklabels=['No', 'Sí'], 
+                yticklabels=['No', 'Sí'])
     plt.xlabel('Predicción')
     plt.ylabel('Real')
     plt.title('Matriz de Confusión')
@@ -95,17 +103,31 @@ def evaluate():
 # -------------------------------------------------------
 def predict_label(features_dict, threshold=0.5):
     input_df = pd.DataFrame([features_dict])
-    input_df = input_df.replace({'yes': 1, 'no': 0, 'Yes': 1, 'No': 0, True: 1, False: 0})
+    input_df = input_df.replace({
+        'yes': 1, 'no': 0,
+        'Yes': 1, 'No': 0,
+        True: 1, False: 0
+    })
 
     # Asegurar columnas consistentes
-    for col in X.columns:
+    for col in features:  # usamos 'features' para mantener el orden exacto
         if col not in input_df.columns:
             input_df[col] = 0
 
-    input_scaled = scaler.transform(input_df[X.columns])
+    # Depuración: ver datos que entran al modelo
+    print("=== Datos recibidos para predicción ===")
+    print(input_df[features])
+
+    # Escalar y predecir
+    input_scaled = scaler.transform(input_df[features])
     prob = model.predict_proba(input_scaled)[0][1]
+
+    # Depuración: ver probabilidad cruda
+    print("Probabilidad cruda:", prob)
+
     label = 'Sí' if prob >= threshold else 'No'
-    return label, round(prob, 4)
+    return label, prob
+
 
 # -------------------------------------------------------
 # Descripción del flujo
