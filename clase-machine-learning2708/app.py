@@ -136,6 +136,30 @@ def r_logistica_ejercicio():
     )
 
 # ---------------------------
+# CLASIFICACIÓN - CONCEPTOS
+# ---------------------------
+@app.route("/clasificacion/conceptos")
+def clasificacion_conceptos():
+    referencias = [
+        "Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (pp. 785–794).",
+        "Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12, 2825–2830.",
+        "Fawcett, T. (2006). An introduction to ROC analysis. Pattern Recognition Letters, 27(8), 861–874."
+    ]
+    return render_template(
+        "clasificacion_conceptos.html",
+        referencias=referencias,
+        casos=casos,
+        active_page='clasificacion_conceptos'
+    )
+
+# ---------------------------
+# CLASIFICACIÓN - EJERCICIO (placeholder)
+# ---------------------------
+@app.route("/clasificacion/ejercicio")
+def clasificacion_ejercicio():
+    return render_template("clasificacion_ejercicio.html", casos=casos, active_page='clasificacion_ejercicio')
+
+# ---------------------------
 # MAIN
 # ---------------------------
 if __name__ == "__main__":
