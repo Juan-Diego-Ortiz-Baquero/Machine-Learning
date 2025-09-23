@@ -24,6 +24,25 @@
             <li><a class="dropdown-item {% if active_page == 'r_logistica_ejercicio' %}active{% endif %}" href="{{ url_for('r_logistica_ejercicio') }}">Ejercicio práctico</a></li>
           </ul>
         </li>
+
+        <!-- NUEVA SECCIÓN: CLASIFICACIÓN -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {% if active_page in ['clasificacion_conceptos','clasificacion_ejercicio'] %}active{% endif %}" href="#" data-bs-toggle="dropdown">
+            Tipos de Algoritmos de Clasificación
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item {% if active_page == 'clasificacion_conceptos' %}active{% endif %}" href="{{ url_for('clasificacion_conceptos') }}">
+                Conceptos básicos
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item {% if active_page == 'clasificacion_ejercicio' %}active{% endif %}" href="{{ url_for('clasificacion_ejercicio') }}">
+                Caso práctico
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
   </div>

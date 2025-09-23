@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Clasificación — Conceptos básicos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- Navbar unificada -->
+  {% include 'navbar.html' %}
+
+  <main class="container text-start">
+    <h1 class="mb-4">Conceptos básicos de clasificación</h1>
+
+    <p class="mb-3">
+      Mapa conceptual (MindMeister) con los principales tipos de algoritmos de clasificación.  
+      Reemplaza el enlace por tu mapa:
+    </p>
+
+    <!-- Opcional: incrustar tu mapa de MindMeister -->
+    {% if mind_url %}
+      <div class="ratio ratio-16x9 mb-4">
+        <iframe src="{{ mind_url }}" frameborder="0" allowfullscreen></iframe>
+      </div>
+    {% endif %}
+
+    <h3 class="mt-4">Estructura sugerida del mapa</h3>
+    <ul class="mb-4">
+      <li><strong>Lineales:</strong> Regresión Logística (sigmoide, odds/logit, pros/contras), SVM lineal (margen máximo, C).</li>
+      <li><strong>Basados en distancia:</strong> k-NN (k, métricas: euclídea/Manhattan, normalización).</li>
+      <li><strong>Probabilísticos:</strong> Naive Bayes (independencia condicional, multinomial/gaussiano).</li>
+      <li><strong>Árboles y Ensambles:</strong> Árbol de decisión (Gini/Entropía, profundidad, overfitting), Random Forest (bagging, n_estimators, OOB), Gradient Boosting (tasa de aprendizaje, profundidad) y variantes (XGBoost/LightGBM/CatBoost).</li>
+      <li><strong>Redes Neuronales:</strong> MLP (capas, activaciones, regularización).</li>
+      <li><strong>Tópicos transversales:</strong> Preprocesamiento (escalado, one-hot, imputación), métricas (accuracy, precision, recall, F1, ROC-AUC, matriz de confusión).</li>
+    </ul>
+
+    <h3>Referencias (APA 7)</h3>
+    <ul>
+      {% for ref in referencias %}
+        <li>{{ ref }}</li>
+      {% endfor %}
+    </ul>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
