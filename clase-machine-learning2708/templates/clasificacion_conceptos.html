@@ -5,45 +5,153 @@
   <title>Clasificación — Conceptos básicos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- MathJax para renderizar LaTeX -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body class="bg-light">
 
-  <!-- Navbar unificada -->
   {% include 'navbar.html' %}
 
   <main class="container text-start">
-    <h1 class="mb-4">Conceptos básicos de clasificación</h1>
 
-    <p class="mb-3">
-      Mapa conceptual (MindMeister) con los principales tipos de algoritmos de clasificación.  
-      Reemplaza el enlace por tu mapa:
-    </p>
+    <!-- Título principal -->
+    <section class="mb-5">
+      <h1 class="mb-4">Conceptos básicos de clasificación</h1>
+      <p>Mapa conceptual (MindMeister) con los principales tipos de algoritmos de clasificación.</p>
+    </section>
 
-    <!-- Opcional: incrustar tu mapa de MindMeister -->
-    {% if mind_url %}
+    <!-- Mapa MindMeister -->
+    <section class="mb-5">
       <div class="ratio ratio-16x9 mb-4">
-        <iframe src="{{ mind_url }}" frameborder="0" allowfullscreen></iframe>
+        <iframe width="100%" height="600" frameborder="0"
+          src="https://www.mindmeister.com/maps/public_map_shell/3823094368/clasificaci-n?width=800&height=600&z=auto&live_update=1"
+          scrolling="no" style="overflow:hidden;margin-bottom:5px">
+          Tu navegador no puede mostrar marcos. Visita 
+          <a href="https://www.mindmeister.com/3823094368/clasificaci-n" target="_blank">Clasificación</a> en MindMeister.
+        </iframe>
       </div>
-    {% endif %}
+      <div>
+        <a href="https://www.mindmeister.com/3823094368/clasificaci-n" target="_blank">Clasificación</a> por 
+        <a href="https://www.mindmeister.com/users/channel/127352034" target="_blank" rel="noopener noreferrer">Juan Diego Ortiz Baquero</a>
+      </div>
+    </section>
 
-    <h3 class="mt-4">Estructura sugerida del mapa</h3>
-    <ul class="mb-4">
-      <li><strong>Lineales:</strong> Regresión Logística (sigmoide, odds/logit, pros/contras), SVM lineal (margen máximo, C).</li>
-      <li><strong>Basados en distancia:</strong> k-NN (k, métricas: euclídea/Manhattan, normalización).</li>
-      <li><strong>Probabilísticos:</strong> Naive Bayes (independencia condicional, multinomial/gaussiano).</li>
-      <li><strong>Árboles y Ensambles:</strong> Árbol de decisión (Gini/Entropía, profundidad, overfitting), Random Forest (bagging, n_estimators, OOB), Gradient Boosting (tasa de aprendizaje, profundidad) y variantes (XGBoost/LightGBM/CatBoost).</li>
-      <li><strong>Redes Neuronales:</strong> MLP (capas, activaciones, regularización).</li>
-      <li><strong>Tópicos transversales:</strong> Preprocesamiento (escalado, one-hot, imputación), métricas (accuracy, precision, recall, F1, ROC-AUC, matriz de confusión).</li>
-    </ul>
+    <!-- Estructura enriquecida -->
+    <section class="mb-5">
+      <h3 class="mt-4">Estructura sugerida del mapa</h3>
+      <ul class="mb-4">
+        <li><strong>Lineales:</strong>
+          <ul>
+            <li><em>Regresión Logística:</em> Modelo lineal que usa la función sigmoide 
+              $$\sigma(z) = \frac{1}{1 + e^{-z}}$$ 
+              para convertir la salida en probabilidad.<br>
+              <strong>Pros:</strong> interpretable, rápido.<br>
+              <strong>Contras:</strong> no captura relaciones no lineales sin ingeniería.<br>
+              <strong>Ejemplo:</strong> clasificación de correos como spam/no spam.
+            </li>
+            <li><em>SVM lineal:</em> Encuentra el hiperplano con margen máximo 
+              $$\text{Margen} = \frac{2}{\|w\|}$$<br>
+              <strong>Pros:</strong> robusto en alta dimensión.<br>
+              <strong>Contras:</strong> requiere escalado, sensible a outliers.<br>
+              <strong>Ejemplo:</strong> clasificación de texto con bolsa de palabras.
+            </li>
+          </ul>
+        </li>
 
-    <h3>Referencias (APA 7)</h3>
+        <li><strong>Basados en distancia:</strong>
+          <ul>
+            <li><em>k-NN:</em> Clasifica según los \(k\) vecinos más cercanos usando métricas como euclídea 
+              $$d_{\text{euclídea}}(x,y) = \sqrt{\sum_i (x_i - y_i)^2}$$ 
+              o Manhattan 
+              $$d_{\text{Manhattan}}(x,y) = \sum_i |x_i - y_i|$$<br>
+              <strong>Pros:</strong> simple, sin entrenamiento.<br>
+              <strong>Contras:</strong> costoso en predicción, sensible a ruido.<br>
+              <strong>Ejemplo:</strong> recomendación de productos similares.
+            </li>
+          </ul>
+        </li>
+
+        <li><strong>Probabilísticos:</strong>
+          <ul>
+            <li><em>Naive Bayes:</em> Aplica el teorema de Bayes con independencia condicional 
+              $$P(C \mid x) \propto P(C) \prod_i P(x_i \mid C)$$<br>
+              <strong>Pros:</strong> rápido, buen rendimiento en texto.<br>
+              <strong>Contras:</strong> independencia rara vez exacta.<br>
+              <strong>Ejemplo:</strong> clasificación de noticias por categoría.
+            </li>
+          </ul>
+        </li>
+
+        <li><strong>Árboles y Ensambles:</strong>
+          <ul>
+            <li><em>Árbol de decisión:</em> Divide datos según criterios como Gini 
+              $$G = 1 - \sum_k p_k^2$$ 
+              o Entropía 
+              $$H = - \sum_k p_k \log p_k$$<br>
+              <strong>Pros:</strong> interpretable, maneja categóricas.<br>
+              <strong>Contras:</strong> sobreajuste sin poda.<br>
+              <strong>Ejemplo:</strong> aprobación de créditos.
+            </li>
+            <li><em>Random Forest:</em> Combina árboles con bagging y muestreo aleatorio.<br>
+              <strong>Pros:</strong> robusto, buen rendimiento.<br>
+              <strong>Contras:</strong> menos interpretable.<br>
+              <strong>Ejemplo:</strong> predicción de enfermedades.
+            </li>
+            <li><em>Gradient Boosting:</em> Entrena modelos débiles secuencialmente para corregir errores 
+              $$F_m(x) = F_{m-1}(x) + \nu \cdot h_m(x)$$<br>
+              <strong>Pros:</strong> alta precisión con buen tuning.<br>
+              <strong>Contras:</strong> propenso a sobreajuste.<br>
+              <strong>Ejemplo:</strong> ranking de resultados en buscadores.
+            </li>
+          </ul>
+        </li>
+
+        <li><strong>Redes Neuronales:</strong>
+          <ul>
+            <li><em>MLP (Perceptrón Multicapa):</em> Capas densas con activaciones como ReLU, Sigmoid o Tanh; salida softmax para multiclase 
+              $$\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$$<br>
+              <strong>Pros:</strong> flexibles, capturan patrones complejos.<br>
+              <strong>Contras:</strong> requieren más datos, sensibles al escalado.<br>
+              <strong>Ejemplo:</strong> reconocimiento de dígitos escritos a mano.
+            </li>
+          </ul>
+        </li>
+
+        <li><strong>Tópicos transversales:</strong>
+          <ul>
+            <li><em>Preprocesamiento:</em> Escalado (SVM, k-NN, MLP), codificación one-hot, imputación.<br>
+              <strong>Ejemplo:</strong> normalizar ingresos antes de entrenar un modelo.
+            </li>
+            <li><em>Métricas:</em> Accuracy 
+              $$\text{Accuracy} = \frac{VP + VN}{VP + FP + VN + FN}$$ 
+              Precision 
+              $$\text{Precision} = \frac{VP}{VP + FP}$$ 
+              Recall 
+              $$\text{Recall} = \frac{VP}{VP + FN}$$ 
+              F1 
+              $$F1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$<br>
+              <strong>Ejemplo:</strong> evaluar un modelo de detección de fraude optimizando Recall.
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+<h3>Referencias (APA 7)</h3>
     <ul>
-      {% for ref in referencias %}
-        <li>{{ ref }}</li>
-      {% endfor %}
+      <li>Fernández, A. (2023). <em>Programar kNN desde cero en R</em>. Recuperado de <a href="https://anderfernandez.com/blog/programar-knn-r/" target="_blank">https://anderfernandez.com/blog/programar-knn-r/</a></li>
+      <li>IBM. (2024). <em>¿Qué es el algoritmo KNN?</em>. Recuperado de <a href="https://www.ibm.com/mx-es/think/topics/knn" target="_blank">https://www.ibm.com/mx-es/think/topics/knn</a></li>
+      <li>Wikipedia. (s.f.). <em>Clasificador bayesiano ingenuo</em>. En Wikipedia. Recuperado de <a href="https://es.wikipedia.org/wiki/Clasificador_bayesiano_ingenuo" target="_blank">https://es.wikipedia.org/wiki/Clasificador_bayesiano_ingenuo</a></li>
+      <li>CienciaDeDatos.net. (2021). <em>Grid search Random Forest con OOB y early stopping</em>. Recuperado de <a href="https://cienciadedatos.net/documentos/py36-grid-search-random-forest-out-of-bag-error-early-stopping" target="_blank">https://cienciadedatos.net/documentos/py36-grid-search-random-forest-out-of-bag-error-early-stopping</a></li>
+      <li>CienciaDeDatos.net. (s.f.). <em>Gradient Boosting con Python</em>. Recuperado de <a href="https://cienciadedatos.net/documentos/py09_gradient_boosting_python" target="_blank">https://cienciadedatos.net/documentos/py09_gradient_boosting_python</a></li>
+      <li>IBM. (s.f.). <em>¿Qué es XGBoost?</em>. Recuperado de <a href="https://www.ibm.com/es-es/think/topics/xgboost" target="_blank">https://www.ibm.com/es-es/think/topics/xgboost</a></li>
+      <li>DataCamp. (2024). <em>Perceptrones multicapa: Guía completa</em>. Recuperado de <a href="https://www.datacamp.com/es/tutorial/multilayer-perceptrons-in-machine-learning" target="_blank">https://www.datacamp.com/es/tutorial/multilayer-perceptrons-in-machine-learning</a></li>
+      <li>LabEx. (s.f.). <em>Regularización en MLP</em>. Recuperado de <a href="https://labex.io/es/tutorials/ml-multi-layer-perceptron-regularization-49214" target="_blank">https://labex.io/es/tutorials/ml-multi-layer-perceptron-regularization-49214</a></li>
+      <li>Colab (Waissman, J.). (2024). <em>Preprocesamiento con ColumnTransformer y Pipeline</em>. Recuperado de <a href="https://colab.research.google.com/github/ml-unison/ml-unison.github.io/blob/main/ejemplos/preprocesamiento.ipynb" target="_blank">https://colab.research.google.com/github/ml-unison/ml-unison.github.io/blob/main/ejemplos/preprocesamiento.ipynb</a></li>
+      <li>DataCamp. (2024). <em>One-hot encoding en Python</em>. Recuperado de <a href="https://www.datacamp.com/es/tutorial/one-hot-encoding-python-tutorial" target="_blank">https://www.datacamp.com/es/tutorial/one-hot-encoding-python-tutorial</a></li>
+      <li>Google Developers. (2025). <em>Accuracy, precision, recall y métricas relacionadas</em>. Recuperado de <a href="https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall?hl=es-419" target="_blank">https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall?hl=es-419</a></li>
+      <li>TheMachineLearners. (s.f.). <em>Métricas de clasificación</em>. Recuperado de <a href="https://www.themachinelearners.com/metricas-de-clasificacion/" target="_blank">https://www.themachinelearners.com/metricas-de-clasificacion/</a></li>
+      <li>OpenAI. (2025). ChatGPT (septiembre 22, versión GPT-5) [Modelo de lenguaje grande]. OpenAI. https://chat.openai.com/</li>
     </ul>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
