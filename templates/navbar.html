@@ -26,10 +26,23 @@
             Regresión lineal
           </a>
           <ul class="dropdown-menu" aria-labelledby="regresionDropdown">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="{{ url_for('home') }}">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link {% if active_page == 'casos' %}active{% endif %}" href="{{ url_for('casos_view') }}">Casos</a></li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {% if active_page in ['regresion_conceptos','regresion_ejercicio'] %}active{% endif %}" href="#" data-bs-toggle="dropdown">Regresión lineal</a>
+          <ul class="dropdown-menu">
             <li><a class="dropdown-item {% if active_page == 'regresion_conceptos' %}active{% endif %}" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
             <li><a class="dropdown-item {% if active_page == 'regresion_ejercicio' %}active{% endif %}" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
           </ul>
         </li>
+
 
         <!-- Regresión logística -->
         <li class="nav-item dropdown">
@@ -39,11 +52,15 @@
             Regresión logística
           </a>
           <ul class="dropdown-menu" aria-labelledby="logisticaDropdown">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {% if active_page in ['r_logistica_conceptos','r_logistica_ejercicio'] %}active{% endif %}" href="#" data-bs-toggle="dropdown">Regresión logística</a>
+          <ul class="dropdown-menu">
+
             <li><a class="dropdown-item {% if active_page == 'r_logistica_conceptos' %}active{% endif %}" href="{{ url_for('r_logistica_conceptos') }}">Conceptos básicos</a></li>
             <li><a class="dropdown-item {% if active_page == 'r_logistica_ejercicio' %}active{% endif %}" href="{{ url_for('r_logistica_ejercicio') }}">Ejercicio práctico</a></li>
           </ul>
         </li>
-
         <!-- Clasificación -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle {% if active_page in ['clasificacion_conceptos','clasificacion_ejercicio'] %}active{% endif %}"
