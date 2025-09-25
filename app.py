@@ -83,7 +83,7 @@ def r_logistica_conceptos():
         "OpenAI. (2025). ChatGPT (septiembre 16, [versión GPT-5]). OpenAI. https://chat.openai.com/"
     ]
     # Asegúrate que el nombre del template exista: r_logistica_concepto.html
-    return render_template("r_logistica_concepto.html", referencias=referencias, casos=casos, active_page='r_logistica_conceptos')
+    return render_template("r_logistica_concepto.html", referencias=referencias, casos=casos, active_page='r_logistica_concepto')
 
 @app.route("/regresion-logistica/ejercicio", methods=["GET", "POST"])
 def r_logistica_ejercicio():

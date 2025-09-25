@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>Clasificación — Conceptos básicos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- MathJax para renderizar LaTeX -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -12,7 +13,69 @@
 </head>
 <body class="bg-light">
 
-  {% include 'navbar.html' %}
+  <!-- 🔹 Navbar fija para esta página -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">ML</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navClasificacion"
+              aria-controls="navClasificacion" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div id="navClasificacion" class="collapse navbar-collapse">
+        <ul class="navbar-nav">
+
+          <!-- Inicio -->
+          <li class="nav-item">
+            <a class="nav-link" href="/">Inicio</a>
+          </li>
+
+          <!-- Casos -->
+          <li class="nav-item">
+            <a class="nav-link" href="/casos">Casos</a>
+          </li>
+
+          <!-- Regresión lineal -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="regresionDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false">
+              Regresión lineal
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="regresionDropdown">
+              <li><a class="dropdown-item" href="/regresion-lineal/conceptos">Conceptos básicos</a></li>
+              <li><a class="dropdown-item" href="/regresion-lineal/ejercicio">Ejercicio práctico</a></li>
+            </ul>
+          </li>
+
+          <!-- Regresión logística -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="logisticaDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false">
+              Regresión logística
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="logisticaDropdown">
+              <li><a class="dropdown-item" href="/regresion-logistica/conceptos">Conceptos básicos</a></li>
+              <li><a class="dropdown-item" href="/regresion-logistica/ejercicio">Ejercicio práctico</a></li>
+            </ul>
+          </li>
+
+          <!-- Clasificación -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" id="clasificacionDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false">
+              Tipos de Algoritmos de Clasificación
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="clasificacionDropdown">
+              <li><a class="dropdown-item active" href="/clasificacion/conceptos">Conceptos básicos</a></li>
+              <li><a class="dropdown-item" href="/clasificacion/ejercicio">Caso práctico</a></li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- 🔹 Fin Navbar -->
 
   <main class="container text-start">
 
@@ -155,3 +218,8 @@
       <li>TheMachineLearners. (s.f.). <em>Métricas de clasificación</em>. Recuperado de <a href="https://www.themachinelearners.com/metricas-de-clasificacion/" target="_blank">https://www.themachinelearners.com/metricas-de-clasificacion/</a></li>
       <li>OpenAI. (2025). ChatGPT (septiembre 22, versión GPT-5) [Modelo de lenguaje grande]. OpenAI. https://chat.openai.com/</li>
     </ul>
+  </main>
+   <!-- Bootstrap JS (para dropdowns) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
