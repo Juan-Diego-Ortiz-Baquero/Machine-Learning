@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Regresión logística — Predicción de abandono escolar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  {% include 'navbar.html' %}
+
+  <main class="container">
+    <h1 class="mb-4">Predicción de abandono escolar</h1>
+
+    <p class="text-muted">
+      Este modelo utiliza regresión logística para predecir si un estudiante abandonará sus estudios.
+      Las variables consideradas son: <strong>Horas de estudio semanales</strong>, <strong>Número de fallos previos</strong>, <strong>Nota final</strong>, <strong>Apoyo escolar</strong>, <strong>Apoyo familiar</strong>, <strong>Acceso a internet</strong> y <strong>Deseo de educación superior</strong>.
+    </p>
+
+    <!-- Tarjeta: Explicación del dataset -->
+    <div class="card mb-4 border-info">
+      <div class="card-header bg-info text-white">Explicación del dataset</div>
+      <div class="card-body">
+        <p class="mb-2">
+          La variable objetivo es <strong>Dropped_Out</strong>: <code>1 = Sí</code>, <code>0 = No</code>.<br>
+          El modelo fue entrenado con {{ descripcion_dataset.filas }} registros.<br>
+          Exactitud obtenida: {{ descripcion_dataset.accuracy }}.
+        </p>
+        <hr>
+        <p class="mb-1"><strong>Predicción de abandono universitario</strong></p>
+        <p class="mb-1">
+          Variables originales: Promedio académico, Asistencia a clases, Horas de estudio, Carrera (categórica).<br>
+          Objetivo: ¿Abandona el estudiante? (Sí/No).<br>
+          Autor del trabajo: Juan Ortiz.
+        </p>
+        <p class="mb-1">
+          <em>Nota:</em> En el dataset original de Kaggle no existe la variable 'Promedio académico' tal cual,
+          por lo que se reemplazó por 'Final_Grade' (nota final) como aproximación.
+        </p>
+        <p class="mb-0">
+          <strong>Fuente de datos:</strong><br>
+          Abdullah0a. (2023). <em>Student Dropout Analysis and Prediction Dataset</em> [Conjunto de datos]. Kaggle. 
+          <a href="https://www.kaggle.com/datasets/abdullah0a/student-dropout-analysis-and-prediction-dataset?resource=download" target="_blank">
+            https://www.kaggle.com/datasets/abdullah0a/student-dropout-analysis-and-prediction-dataset?resource=download
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Tarjeta: Flujo del modelo -->
+    <div class="card mb-4 border-secondary">
+      <div class="card-header bg-secondary text-white">Flujo general del modelo</div>
+      <div class="card-body">
+        <pre class="mb-0">{{ workflow_description }}</pre>
+      </div>
+    </div>
+
+    <div class="row g-4">
+    <!-- Tarjeta: Reporte de clasificación -->
+<div class="card mb-4 border-success">
+  <div class="card-header bg-success text-white">Reporte de clasificación</div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-sm table-striped table-bordered align-middle mb-0">
+        <thead class="table-secondary">
+          <tr>
+            <th>Clase</th>
+            <th>Precisión</th>
+            <th>Recall</th>
+            <th>F1-score</th>
+            <th>Support</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if report %}
+            {% for clase, valores in report.items() %}
+              {% if clase not in ['accuracy', 'macro avg', 'weighted avg'] %}
+              <tr>
+                <td>{{ clase }}</td>
+                <td>{{ '%.3f'|format(valores['precision']) }}</td>
+                <td>{{ '%.3f'|format(valores['recall']) }}</td>
+                <td>{{ '%.3f'|format(valores['f1-score']) }}</td>
+                <td>{{ valores['support'] }}</td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+            {% if report.get('accuracy') %}
+            <tr class="table-light">
+              <td><strong>Accuracy</strong></td>
+              <td colspan="3"></td>
+              <td>{{ '%.3f'|format(report['accuracy']) }}</td>
+            </tr>
+            {% endif %}
+            {% for avg in ['macro avg', 'weighted avg'] %}
+              {% if report.get(avg) %}
+              <tr>
+                <td>{{ avg }}</td>
+                <td>{{ '%.3f'|format(report[avg]['precision']) }}</td>
+                <td>{{ '%.3f'|format(report[avg]['recall']) }}</td>
+                <td>{{ '%.3f'|format(report[avg]['f1-score']) }}</td>
+                <td>{{ report[avg]['support'] }}</td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="5" class="text-muted">No hay datos de reporte.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+      <!-- Visualización -->
+      <div class="col-12 col-lg-7">
+        <div class="card h-100">
+          <div class="card-header">Matriz de confusión</div>
+          <div class="card-body">
+            <img class="img-fluid" src="data:image/png;base64, {{ confusion_png }}" alt="Matriz de confusión">
+            <div class="text-muted small mt-2">
+              Filas = Reales (0 = No, 1 = Sí) · Columnas = Predicho (0 = No, 1 = Sí)
+            </div>  
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="col-12 col-lg-5">
+        <div class="card h-100">
+          <div class="card-header">Ingresar datos del estudiante</div>
+          <div class="card-body">
+            <form method="POST" action="{{ url_for('r_logistica_ejercicio') }}">
+              <div class="mb-3">
+                <label class="form-label">Horas de estudio semanales (Study_Time)</label>
+                <input type="number" step="any" class="form-control" name="Study_Time" placeholder="Ej: 3" value="{{ valores.Study_Time if valores }}">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Número de ausencias (Number_of_Absences)</label>
+                <input type="number" step="any" class="form-control" name="Number_of_Absences" placeholder="Ej: 1" value="{{ valores.Number_of_Absences if valores }}">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Nota final (Final_Grade)</label>
+                <input type="number" step="any" class="form-control" name="Final_Grade" placeholder="Ej: 14" value="{{ valores.Final_Grade if valores }}">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Apoyo escolar (School_Support)</label>
+                <select class="form-select" name="School_Support">
+                  <option value="yes" {% if valores.School_Support == 'yes' %}selected{% endif %}>Sí</option>
+                  <option value="no" {% if valores.School_Support == 'no' %}selected{% endif %}>No</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Apoyo familiar (Family_Support)</label>
+                <select class="form-select" name="Family_Support">
+                  <option value="yes" {% if valores.Family_Support == 'yes' %}selected{% endif %}>Sí</option>
+                  <option value="no" {% if valores.Family_Support == 'no' %}selected{% endif %}>No</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Acceso a internet (Internet_Access)</label>
+                <select class="form-select" name="Internet_Access">
+                  <option value="yes" {% if valores.Internet_Access == 'yes' %}selected{% endif %}>Sí</option>
+                  <option value="no" {% if valores.Internet_Access == 'no' %}selected{% endif %}>No</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Desea educación superior (Wants_Higher_Education)</label>
+                <select class="form-select" name="Wants_Higher_Education">
+                  <option value="yes" {% if valores.Wants_Higher_Education == 'yes' %}selected{% endif %}>Sí</option>
+                  <option value="no" {% if valores.Wants_Higher_Education == 'no' %}selected{% endif %}>No</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Predecir abandono</button>
+            </form>
+
+            {% if prediccion is not none %}
+              <hr>
+              <div class="text-center">
+                <div class="h4 mb-1">Predicción:</div>
+                <div class="display-6">{{ prediccion.label }}</div>
+                <div class="text-muted">Probabilidad: {{ prediccion.probabilidad }}</div>
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
