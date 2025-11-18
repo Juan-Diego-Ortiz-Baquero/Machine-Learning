@@ -197,11 +197,12 @@ def clasificacion_ejercicio():
 @app.route("/aprendizaje-por-refuerzo/conceptos")
 def rl_conceptos():
     referencias = [
-        "Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT Press.",
-        "Watkins, C. J. C. H., & Dayan, P. (1992). Q-learning. Machine learning, 8(3-4), 279-292.",
-        "Mnih, V., et al. (2015). Human-level control through deep reinforcement learning. Nature, 518(7540), 529-533.",
-        "OpenAI. (2023). Spinning Up in Deep RL. https://spinningup.openai.com/en/latest/",
-        "DeepMind. (2016). Mastering the game of Go with deep neural networks and tree search. Nature, 529(7587), 484-489."
+        "Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction (2ª ed.). MIT Press. Recuperado de https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf",
+        "DotCSV. (s.f.). Aprendizaje por Refuerzo desde cero [Canal de YouTube]. Recuperado de https://www.youtube.com/channel/UCy5znSnfMsDwaLlROnZ7Qbg",
+        "Universidad de Alberta. (s.f.). Fundamentos del Aprendizaje por Refuerzo [Curso en línea]. Coursera. Recuperado de https://aulapro.co/cursos/fundamentos-del-aprendizaje-por-refuerzo-curso-virtual-coursera/",
+        "Farama Foundation. (s.f.). Gymnasium Documentation. Recuperado de https://gymnasium.farama.org/",
+        "Raffin, A., Hill, A., Ernestus, M., Gleave, A., Kanervisto, A., & Dormann, N. (2021). Stable Baselines3: Reliable Reinforcement Learning Implementations. GitHub. Recuperado de https://github.com/DLR-RM/stable-baselines3",
+        "Papers With Code. (s.f.). Reinforcement Learning – Papers and Code. Recuperado de https://paperswithcode.com/methods/area/reinforcement-learning",        "Google Developers. (s.f.). Machine Learning Crash Course – Reinforcement Learning. Recuperado de https://developers.google.com/machine-learning/crash-course/reinforcement-learning"
     ]
     return render_template(
         "rl_conceptos.html", 
