@@ -149,7 +149,7 @@ workflow_description = """
 def get_dataset_description():
     return {
         "filas": len(X_train) + len(X_test),
-        "accuracy": f"{evaluate()['accuracy']:.4f}"
+        "accuracy": evaluate()['accuracy']
     }
 
 def ensure_model():

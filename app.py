@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, current_app
+from flask import Flask, render_template, request, current_app, jsonify
 from casos_data import casos
 import regression_model as rl
 import regression_logistica as rlog
 import xgb_credit as xgb
+import reinforcement_learning as rl_module
 import base64
 import os
 
@@ -189,6 +190,213 @@ def clasificacion_ejercicio():
         casos=casos,
         active_page='clasificacion_ejercicio'
     )
+
+# ---------------------------
+# APRENDIZAJE POR REFUERZO
+# ---------------------------
+@app.route("/aprendizaje-por-refuerzo/conceptos")
+def rl_conceptos():
+    referencias = [
+        "Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT Press.",
+        "Watkins, C. J. C. H., & Dayan, P. (1992). Q-learning. Machine learning, 8(3-4), 279-292.",
+        "Mnih, V., et al. (2015). Human-level control through deep reinforcement learning. Nature, 518(7540), 529-533.",
+        "OpenAI. (2023). Spinning Up in Deep RL. https://spinningup.openai.com/en/latest/",
+        "DeepMind. (2016). Mastering the game of Go with deep neural networks and tree search. Nature, 529(7587), 484-489."
+    ]
+    return render_template(
+        "rl_conceptos.html", 
+        referencias=referencias, 
+        casos=casos, 
+        active_page='rl_conceptos'
+    )
+
+@app.route("/aprendizaje-por-refuerzo/ejercicio", methods=["GET", "POST"])
+def rl_ejercicio():
+    """Ejercicio práctico de Reinforcement Learning con GridWorld"""
+    
+    # Estado inicial del entorno
+    env_state = rl_module.get_training_status()
+    
+    # Variables por defecto
+    training_plot = None
+    simulation_plot = None
+    training_result = None
+    
+    if request.method == "POST":
+        action = request.form.get("action")
+        
+        if action == "train":
+            # Obtener parámetros de entrenamiento
+            episodes = int(request.form.get("episodes", 100))
+            learning_rate = float(request.form.get("learning_rate", 0.1))
+            discount_factor = float(request.form.get("discount_factor", 0.9))
+            exploration_rate = float(request.form.get("exploration_rate", 1.0))
+            exploration_decay = float(request.form.get("exploration_decay", 0.995))
+            
+            # Entrenar el agente con parámetros personalizados
+            training_result = rl_module.train_agent(
+                episodes=episodes,
+                learning_rate=learning_rate,
+                discount_factor=discount_factor,
+                exploration_rate=exploration_rate,
+                exploration_decay=exploration_decay
+            )
+            
+            # Generar gráfico de entrenamiento actualizado
+            training_plot = rl_module.get_training_plots()
+            
+        elif action == "simulate":
+            # Simular un episodio
+            simulation_result = rl_module.simulate_episode()
+            simulation_plot = simulation_result.get("simulation_plot") if simulation_result else None
+    
+    # Obtener gráfico de entrenamiento si existe un modelo entrenado
+    if not training_plot:
+        try:
+            training_plot = rl_module.get_training_plots()
+        except:
+            training_plot = None
+    
+    return render_template(
+        "rl_ejercicio.html",
+        env_state=env_state,
+        training_plot=training_plot,
+        simulation_plot=simulation_plot,
+        training_result=training_result,
+        casos=casos,
+        active_page='rl_ejercicio'
+    )
+
+@app.route("/api/rl/train", methods=["POST"])
+def api_rl_train():
+    """API endpoint para entrenar el agente de RL"""
+    try:
+        data = request.get_json()
+        episodes = data.get("episodes", 100)
+        learning_rate = data.get("learning_rate", 0.1)
+        discount_factor = data.get("discount_factor", 0.9)
+        exploration_rate = data.get("exploration_rate", 1.0)
+        exploration_decay = data.get("exploration_decay", 0.995)
+        
+        # Entrenar el agente con parámetros personalizados
+        result = rl_module.train_agent(
+            episodes=episodes,
+            learning_rate=learning_rate,
+            discount_factor=discount_factor,
+            exploration_rate=exploration_rate,
+            exploration_decay=exploration_decay
+        )
+        
+        return jsonify({
+            "success": True,
+            "result": result,
+            "plot": rl_module.get_training_plots(),
+            "metrics": rl_module.get_training_metrics()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+
+@app.route("/api/rl/simulate", methods=["POST"])
+def api_rl_simulate():
+    """API endpoint para simular un episodio"""
+    try:
+        result = rl_module.simulate_episode()
+        return jsonify({
+            "success": True,
+            "result": result
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+
+@app.route("/api/rl/status")
+def api_rl_status():
+    """API endpoint para obtener el estado del entorno"""
+    try:
+        status = rl_module.get_training_status()
+        return jsonify({
+            "success": True,
+            "status": status
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+
+@app.route("/api/rl/reset", methods=["POST"])
+def api_rl_reset():
+    """API endpoint para resetear el agente y empezar desde cero"""
+    try:
+        result = rl_module.reset_agent()
+        return jsonify({
+            "success": True,
+            "result": result,
+            "message": "Agente reseteado exitosamente"
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+
+@app.route("/api/rl/train-continue", methods=["POST"])
+def api_rl_train_continue():
+    """API endpoint para continuar entrenamiento del agente actual"""
+    try:
+        data = request.get_json()
+        episodes = data.get("episodes", 100)
+        learning_rate = data.get("learning_rate")
+        discount_factor = data.get("discount_factor")
+        exploration_rate = data.get("exploration_rate")
+        exploration_decay = data.get("exploration_decay")
+        reset = data.get("reset", False)
+        
+        # Entrenar el agente (continuo o con reset)
+        result = rl_module.train_agent(
+            episodes=episodes,
+            learning_rate=learning_rate,
+            discount_factor=discount_factor,
+            exploration_rate=exploration_rate,
+            exploration_decay=exploration_decay,
+            reset=reset
+        )
+        
+        return jsonify({
+            "success": True,
+            "result": result,
+            "plot": rl_module.get_training_plots(),
+            "metrics": rl_module.get_training_metrics()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+
+@app.route("/api/rl/metrics")
+def api_rl_metrics():
+    """API endpoint para obtener métricas en tiempo real"""
+    try:
+        metrics = rl_module.get_training_metrics()
+        plot = rl_module.get_training_plots()
+        return jsonify({
+            "success": True,
+            "metrics": metrics,
+            "plot": plot
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
 
 # ---------------------------
 # MAIN
