@@ -2,224 +2,598 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Clasificación — Conceptos básicos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS -->
+  <title>Algoritmos de Clasificación: Conceptos Básicos — ML Platform</title>
+  <meta name="description" content="Aprende los fundamentos de los algoritmos de clasificación: árboles de decisión, SVM, k-NN, y ensemble methods con ejemplos prácticos.">
+  
+  <!-- Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+  
   <!-- MathJax para renderizar LaTeX -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-<body class="bg-light">
+<body style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh;">
+  {% include 'navbar.html' %}
 
-  <!-- 🔹 Navbar fija para esta página -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">ML</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navClasificacion"
-              aria-controls="navClasificacion" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <!-- Breadcrumb -->
+  <div class="container py-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('home') }}" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>Inicio
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <i class="fas fa-sitemap me-1"></i>Algoritmos de Clasificación
+        </li>
+      </ol>
+    </nav>
+  </div>
 
-      <div id="navClasificacion" class="collapse navbar-collapse">
-        <ul class="navbar-nav">
-
-          <!-- Inicio -->
-          <li class="nav-item">
-            <a class="nav-link" href="/">Inicio</a>
-          </li>
-
-          <!-- Casos -->
-          <li class="nav-item">
-            <a class="nav-link" href="/casos">Casos</a>
-          </li>
-
-          <!-- Regresión lineal -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="regresionDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
-              Regresión lineal
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="regresionDropdown">
-              <li><a class="dropdown-item" href="/regresion-lineal/conceptos">Conceptos básicos</a></li>
-              <li><a class="dropdown-item" href="/regresion-lineal/ejercicio">Ejercicio práctico</a></li>
-            </ul>
-          </li>
-
-          <!-- Regresión logística -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="logisticaDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
-              Regresión logística
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="logisticaDropdown">
-              <li><a class="dropdown-item" href="/regresion-logistica/conceptos">Conceptos básicos</a></li>
-              <li><a class="dropdown-item" href="/regresion-logistica/ejercicio">Ejercicio práctico</a></li>
-            </ul>
-          </li>
-
-          <!-- Clasificación -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active" href="#" id="clasificacionDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
-              Tipos de Algoritmos de Clasificación
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="clasificacionDropdown">
-              <li><a class="dropdown-item active" href="/clasificacion/conceptos">Conceptos básicos</a></li>
-              <li><a class="dropdown-item" href="/clasificacion/ejercicio">Caso práctico</a></li>
-            </ul>
-          </li>
-
-        </ul>
+  <!-- Hero Section -->
+  <section class="py-5" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+    
+    <div class="container text-center position-relative">
+      <div class="mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center" 
+             style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; margin-bottom: 1rem;">
+          <i class="fas fa-sitemap" style="font-size: 3rem;"></i>
+        </div>
+      </div>
+      
+      <h1 class="display-4 fw-bold mb-3 animate-fade-in-up">
+        Algoritmos de Clasificación
+      </h1>
+      <p class="lead mb-4 animate-fade-in-up" style="animation-delay: 0.1s; max-width: 600px; margin: 0 auto;">
+        Explora los principales tipos de algoritmos de clasificación en Machine Learning: 
+        desde modelos lineales hasta ensemble methods avanzados
+      </p>
+      
+      <div class="d-flex justify-content-center gap-3 flex-wrap animate-fade-in-up" style="animation-delay: 0.2s;">
+        <span class="badge bg-light text-dark px-3 py-2">
+          <i class="fas fa-tree me-1"></i>Árboles de Decisión
+        </span>
+        <span class="badge bg-light text-dark px-3 py-2">
+          <i class="fas fa-vector-square me-1"></i>Support Vector Machines
+        </span>
+        <span class="badge bg-light text-dark px-3 py-2">
+          <i class="fas fa-layer-group me-1"></i>Ensemble Methods
+        </span>
       </div>
     </div>
-  </nav>
-  <!-- 🔹 Fin Navbar -->
-
-  <main class="container text-start">
-
-    <!-- Título principal -->
-    <section class="mb-5">
-      <h1 class="mb-4">Conceptos básicos de clasificación</h1>
-      <p>Mapa conceptual (MindMeister) con los principales tipos de algoritmos de clasificación.</p>
-    </section>
-
-    <!-- Mapa MindMeister -->
-    <section class="mb-5">
-      <div class="ratio ratio-16x9 mb-4">
-        <iframe width="100%" height="600" frameborder="0"
-          src="https://www.mindmeister.com/maps/public_map_shell/3823094368/clasificaci-n?width=800&height=600&z=auto&live_update=1"
-          scrolling="no" style="overflow:hidden;margin-bottom:5px">
-          Tu navegador no puede mostrar marcos. Visita 
-          <a href="https://www.mindmeister.com/3823094368/clasificaci-n" target="_blank">Clasificación</a> en MindMeister.
-        </iframe>
+  </section>
+  <main class="container py-5">
+    
+    <!-- Interactive Mind Map Card -->
+    <div class="card border-0 shadow-sm mb-5 animate-fade-in-up">
+      <div class="card-header bg-gradient text-white d-flex align-items-center justify-content-between" 
+           style="background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-project-diagram me-3" style="font-size: 1.5rem;"></i>
+          <h3 class="h5 mb-0 fw-bold">Mapa Conceptual Interactivo</h3>
+        </div>        <span class="badge badge-secondary">
+          <i class="fas fa-external-link-alt me-1"></i>MindMeister
+        </span>
       </div>
-      <div>
-        <a href="https://www.mindmeister.com/3823094368/clasificaci-n" target="_blank">Clasificación</a> por 
-        <a href="https://www.mindmeister.com/users/channel/127352034" target="_blank" rel="noopener noreferrer">Juan Diego Ortiz Baquero</a>
+      <div class="card-body p-0">
+        <div class="ratio ratio-16x9">
+          <iframe width="100%" height="600" frameborder="0" class="rounded-bottom"
+            src="https://www.mindmeister.com/maps/public_map_shell/3823094368/clasificaci-n?width=800&height=600&z=auto&live_update=1"
+            scrolling="no" style="overflow:hidden;"
+            title="Mapa conceptual de algoritmos de clasificación">
+            Tu navegador no puede mostrar marcos. Visita 
+            <a href="https://www.mindmeister.com/3823094368/clasificaci-n" target="_blank">Clasificación</a> en MindMeister.
+          </iframe>
+        </div>
+        <div class="p-3 border-top bg-light">
+          <div class="d-flex align-items-center justify-content-between text-muted small">
+            <div>
+              <i class="fas fa-user me-1"></i>
+              Creado por <a href="https://www.mindmeister.com/users/channel/127352034" target="_blank" 
+                           class="text-decoration-none fw-medium" rel="noopener noreferrer">Juan Diego Ortiz Baquero</a>
+            </div>
+            <a href="https://www.mindmeister.com/3823094368/clasificaci-n" target="_blank" 
+               class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-external-link-alt me-1"></i>Ver en MindMeister
+            </a>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>    <!-- Algorithm Categories -->
+    <div class="row g-4 mb-5">
+      
+      <!-- Linear Algorithms -->
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.1s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;">
+            <i class="fas fa-minus me-3" style="font-size: 1.5rem;"></i>
+            <h4 class="h5 mb-0 fw-bold">Algoritmos Lineales</h4>
+          </div>
+          <div class="card-body p-4">
+            
+            <div class="algorithm-item mb-4">
+              <div class="d-flex align-items-start mb-3">
+                <div class="flex-shrink-0 me-3">
+                  <div class="d-flex align-items-center justify-content-center" 
+                       style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.1); border-radius: 50%;">
+                    <i class="fas fa-chart-line text-primary"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="fw-bold mb-2">Regresión Logística</h6>                  <div class="mb-3">
+                    <!-- Fixed: Better contrast for math formulas -->
+                    <div class="math-formula p-2 rounded">
+                      $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+                    </div>
+                  </div>
+                  <p class="small mb-3">
+                    Modelo lineal que usa la función sigmoide para convertir la salida en probabilidad.
+                  </p>
+                  <div class="row g-2 mb-3">
+                    <div class="col-6">
+                      <div class="p-2 rounded" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="small fw-bold text-success">Pros:</div>
+                        <div class="small">Interpretable, rápido</div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-2 rounded" style="background: rgba(239, 68, 68, 0.1);">
+                        <div class="small fw-bold text-danger">Contras:</div>
+                        <div class="small">Solo relaciones lineales</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="small text-muted">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    <strong>Ejemplo:</strong> Clasificación de spam/no spam en emails
+                  </div>
+                </div>
+              </div>
+            </div>
 
-    <!-- Estructura enriquecida -->
-    <section class="mb-5">
-      <h3 class="mt-4">Estructura sugerida del mapa</h3>
-      <ul class="mb-4">
-        <li><strong>Lineales:</strong>
-          <ul>
-            <li><em>Regresión Logística:</em> Modelo lineal que usa la función sigmoide 
-              $$\sigma(z) = \frac{1}{1 + e^{-z}}$$ 
-              para convertir la salida en probabilidad.<br>
-              <strong>Pros:</strong> interpretable, rápido.<br>
-              <strong>Contras:</strong> no captura relaciones no lineales sin ingeniería.<br>
-              <strong>Ejemplo:</strong> clasificación de correos como spam/no spam.
-            </li>
-            <li><em>SVM lineal:</em> Encuentra el hiperplano con margen máximo 
-              $$\text{Margen} = \frac{2}{\|w\|}$$<br>
-              <strong>Pros:</strong> robusto en alta dimensión.<br>
-              <strong>Contras:</strong> requiere escalado, sensible a outliers.<br>
-              <strong>Ejemplo:</strong> clasificación de texto con bolsa de palabras.
-            </li>
-          </ul>
-        </li>
+            <div class="algorithm-item">
+              <div class="d-flex align-items-start mb-3">
+                <div class="flex-shrink-0 me-3">
+                  <div class="d-flex align-items-center justify-content-center" 
+                       style="width: 40px; height: 40px; background: rgba(139, 92, 246, 0.1); border-radius: 50%;">
+                    <i class="fas fa-vector-square text-purple"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="fw-bold mb-2">Support Vector Machine (SVM)</h6>                  <div class="mb-3">
+                    <!-- Fixed: Better contrast for math formulas -->
+                    <div class="math-formula p-2 rounded">
+                      $$\text{Margen} = \frac{2}{\|w\|}$$
+                    </div>
+                  </div>
+                  <p class="small mb-3">
+                    Encuentra el hiperplano que maximiza el margen entre clases.
+                  </p>
+                  <div class="row g-2 mb-3">
+                    <div class="col-6">
+                      <div class="p-2 rounded" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="small fw-bold text-success">Pros:</div>
+                        <div class="small">Robusto en alta dimensión</div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-2 rounded" style="background: rgba(239, 68, 68, 0.1);">
+                        <div class="small fw-bold text-danger">Contras:</div>
+                        <div class="small">Sensible a outliers</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="small text-muted">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    <strong>Ejemplo:</strong> Clasificación de texto con bag-of-words
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <li><strong>Basados en distancia:</strong>
-          <ul>
-            <li><em>k-NN:</em> Clasifica según los \(k\) vecinos más cercanos usando métricas como euclídea 
-              $$d_{\text{euclídea}}(x,y) = \sqrt{\sum_i (x_i - y_i)^2}$$ 
-              o Manhattan 
-              $$d_{\text{Manhattan}}(x,y) = \sum_i |x_i - y_i|$$<br>
-              <strong>Pros:</strong> simple, sin entrenamiento.<br>
-              <strong>Contras:</strong> costoso en predicción, sensible a ruido.<br>
-              <strong>Ejemplo:</strong> recomendación de productos similares.
-            </li>
-          </ul>
-        </li>
+          </div>
+        </div>
+      </div>
 
-        <li><strong>Probabilísticos:</strong>
-          <ul>
-            <li><em>Naive Bayes:</em> Aplica el teorema de Bayes con independencia condicional 
-              $$P(C \mid x) \propto P(C) \prod_i P(x_i \mid C)$$<br>
-              <strong>Pros:</strong> rápido, buen rendimiento en texto.<br>
-              <strong>Contras:</strong> independencia rara vez exacta.<br>
-              <strong>Ejemplo:</strong> clasificación de noticias por categoría.
-            </li>
-          </ul>
-        </li>
+      <!-- Distance-Based Algorithms -->
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.2s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, #10b981, #059669) !important;">
+            <i class="fas fa-ruler me-3" style="font-size: 1.5rem;"></i>
+            <h4 class="h5 mb-0 fw-bold">Basados en Distancia</h4>
+          </div>
+          <div class="card-body p-4">
+            
+            <div class="algorithm-item">
+              <div class="d-flex align-items-start mb-3">
+                <div class="flex-shrink-0 me-3">
+                  <div class="d-flex align-items-center justify-content-center" 
+                       style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.1); border-radius: 50%;">
+                    <i class="fas fa-users text-success"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="fw-bold mb-2">k-Nearest Neighbors (k-NN)</h6>                  <div class="mb-3">
+                    <!-- Fixed: Better contrast for math formulas -->
+                    <div class="math-formula p-2 rounded" style="font-size: 0.85rem;">
+                      <div class="mb-2">$$d_{\text{euclidiana}}(x,y) = \sqrt{\sum_i (x_i - y_i)^2}$$</div>
+                      <div>$$d_{\text{Manhattan}}(x,y) = \sum_i |x_i - y_i|$$</div>
+                    </div>
+                  </div>
+                  <p class="small mb-3">
+                    Clasifica según los k vecinos más cercanos usando métricas de distancia.
+                  </p>
+                  <div class="row g-2 mb-3">
+                    <div class="col-6">
+                      <div class="p-2 rounded" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="small fw-bold text-success">Pros:</div>
+                        <div class="small">Simple, sin entrenamiento</div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-2 rounded" style="background: rgba(239, 68, 68, 0.1);">
+                        <div class="small fw-bold text-danger">Contras:</div>
+                        <div class="small">Costoso en predicción</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="small text-muted">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    <strong>Ejemplo:</strong> Sistema de recomendación de productos
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <li><strong>Árboles y Ensambles:</strong>
-          <ul>
-            <li><em>Árbol de decisión:</em> Divide datos según criterios como Gini 
-              $$G = 1 - \sum_k p_k^2$$ 
-              o Entropía 
-              $$H = - \sum_k p_k \log p_k$$<br>
-              <strong>Pros:</strong> interpretable, maneja categóricas.<br>
-              <strong>Contras:</strong> sobreajuste sin poda.<br>
-              <strong>Ejemplo:</strong> aprobación de créditos.
-            </li>
-            <li><em>Random Forest:</em> Combina árboles con bagging y muestreo aleatorio.<br>
-              <strong>Pros:</strong> robusto, buen rendimiento.<br>
-              <strong>Contras:</strong> menos interpretable.<br>
-              <strong>Ejemplo:</strong> predicción de enfermedades.
-            </li>
-            <li><em>Gradient Boosting:</em> Entrena modelos débiles secuencialmente para corregir errores 
-              $$F_m(x) = F_{m-1}(x) + \nu \cdot h_m(x)$$<br>
-              <strong>Pros:</strong> alta precisión con buen tuning.<br>
-              <strong>Contras:</strong> propenso a sobreajuste.<br>
-              <strong>Ejemplo:</strong> ranking de resultados en buscadores.
-            </li>
-          </ul>
-        </li>
+            <!-- Probabilistic -->
+            <div class="mt-4 pt-4 border-top">
+              <h6 class="fw-bold text-warning mb-3">
+                <i class="fas fa-chart-pie me-2"></i>Algoritmos Probabilísticos
+              </h6>
+              <div class="algorithm-item">
+                <div class="d-flex align-items-start">
+                  <div class="flex-shrink-0 me-3">
+                    <div class="d-flex align-items-center justify-content-center" 
+                         style="width: 35px; height: 35px; background: rgba(245, 158, 11, 0.1); border-radius: 50%;">
+                      <i class="fas fa-brain text-warning" style="font-size: 0.9rem;"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-2">Naive Bayes</h6>                    <div class="mb-2">
+                      <!-- Fixed: Better contrast for math formulas -->
+                      <div class="math-formula p-2 rounded">
+                        $$P(C \mid x) \propto P(C) \prod_i P(x_i \mid C)$$
+                      </div>
+                    </div>
+                    <div class="small text-muted">
+                      <i class="fas fa-lightbulb me-1"></i>
+                      <strong>Ejemplo:</strong> Clasificación de noticias por categoría
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <li><strong>Redes Neuronales:</strong>
-          <ul>
-            <li><em>MLP (Perceptrón Multicapa):</em> Capas densas con activaciones como ReLU, Sigmoid o Tanh; salida softmax para multiclase 
-              $$\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$$<br>
-              <strong>Pros:</strong> flexibles, capturan patrones complejos.<br>
-              <strong>Contras:</strong> requieren más datos, sensibles al escalado.<br>
-              <strong>Ejemplo:</strong> reconocimiento de dígitos escritos a mano.
-            </li>
-          </ul>
-        </li>
+          </div>
+        </div>
+      </div>
 
-        <li><strong>Tópicos transversales:</strong>
-          <ul>
-            <li><em>Preprocesamiento:</em> Escalado (SVM, k-NN, MLP), codificación one-hot, imputación.<br>
-              <strong>Ejemplo:</strong> normalizar ingresos antes de entrenar un modelo.
-            </li>
-            <li><em>Métricas:</em> Accuracy 
-              $$\text{Accuracy} = \frac{VP + VN}{VP + FP + VN + FN}$$ 
-              Precision 
-              $$\text{Precision} = \frac{VP}{VP + FP}$$ 
-              Recall 
-              $$\text{Recall} = \frac{VP}{VP + FN}$$ 
-              F1 
-              $$F1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$<br>
-              <strong>Ejemplo:</strong> evaluar un modelo de detección de fraude optimizando Recall.
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </section>
+    </div>
 
-<h3>Referencias (APA 7)</h3>
-    <ul>
-      <li>Fernández, A. (2023). <em>Programar kNN desde cero en R</em>. Recuperado de <a href="https://anderfernandez.com/blog/programar-knn-r/" target="_blank">https://anderfernandez.com/blog/programar-knn-r/</a></li>
-      <li>IBM. (2024). <em>¿Qué es el algoritmo KNN?</em>. Recuperado de <a href="https://www.ibm.com/mx-es/think/topics/knn" target="_blank">https://www.ibm.com/mx-es/think/topics/knn</a></li>
-      <li>Wikipedia. (s.f.). <em>Clasificador bayesiano ingenuo</em>. En Wikipedia. Recuperado de <a href="https://es.wikipedia.org/wiki/Clasificador_bayesiano_ingenuo" target="_blank">https://es.wikipedia.org/wiki/Clasificador_bayesiano_ingenuo</a></li>
-      <li>CienciaDeDatos.net. (2021). <em>Grid search Random Forest con OOB y early stopping</em>. Recuperado de <a href="https://cienciadedatos.net/documentos/py36-grid-search-random-forest-out-of-bag-error-early-stopping" target="_blank">https://cienciadedatos.net/documentos/py36-grid-search-random-forest-out-of-bag-error-early-stopping</a></li>
-      <li>CienciaDeDatos.net. (s.f.). <em>Gradient Boosting con Python</em>. Recuperado de <a href="https://cienciadedatos.net/documentos/py09_gradient_boosting_python" target="_blank">https://cienciadedatos.net/documentos/py09_gradient_boosting_python</a></li>
-      <li>IBM. (s.f.). <em>¿Qué es XGBoost?</em>. Recuperado de <a href="https://www.ibm.com/es-es/think/topics/xgboost" target="_blank">https://www.ibm.com/es-es/think/topics/xgboost</a></li>
-      <li>DataCamp. (2024). <em>Perceptrones multicapa: Guía completa</em>. Recuperado de <a href="https://www.datacamp.com/es/tutorial/multilayer-perceptrons-in-machine-learning" target="_blank">https://www.datacamp.com/es/tutorial/multilayer-perceptrons-in-machine-learning</a></li>
-      <li>LabEx. (s.f.). <em>Regularización en MLP</em>. Recuperado de <a href="https://labex.io/es/tutorials/ml-multi-layer-perceptron-regularization-49214" target="_blank">https://labex.io/es/tutorials/ml-multi-layer-perceptron-regularization-49214</a></li>
-      <li>Colab (Waissman, J.). (2024). <em>Preprocesamiento con ColumnTransformer y Pipeline</em>. Recuperado de <a href="https://colab.research.google.com/github/ml-unison/ml-unison.github.io/blob/main/ejemplos/preprocesamiento.ipynb" target="_blank">https://colab.research.google.com/github/ml-unison/ml-unison.github.io/blob/main/ejemplos/preprocesamiento.ipynb</a></li>
-      <li>DataCamp. (2024). <em>One-hot encoding en Python</em>. Recuperado de <a href="https://www.datacamp.com/es/tutorial/one-hot-encoding-python-tutorial" target="_blank">https://www.datacamp.com/es/tutorial/one-hot-encoding-python-tutorial</a></li>
-      <li>Google Developers. (2025). <em>Accuracy, precision, recall y métricas relacionadas</em>. Recuperado de <a href="https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall?hl=es-419" target="_blank">https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall?hl=es-419</a></li>
-      <li>TheMachineLearners. (s.f.). <em>Métricas de clasificación</em>. Recuperado de <a href="https://www.themachinelearners.com/metricas-de-clasificacion/" target="_blank">https://www.themachinelearners.com/metricas-de-clasificacion/</a></li>
-      <li>OpenAI. (2025). ChatGPT (septiembre 22, versión GPT-5) [Modelo de lenguaje grande]. OpenAI. https://chat.openai.com/</li>
-    </ul>
+    <!-- Tree-Based and Ensemble Methods -->
+    <div class="card border-0 shadow-sm mb-5 animate-fade-in-up" style="animation-delay: 0.3s;">
+      <div class="card-header bg-gradient text-white d-flex align-items-center" 
+           style="background: linear-gradient(135deg, #f59e0b, #d97706) !important;">
+        <i class="fas fa-tree me-3" style="font-size: 1.5rem;"></i>
+        <h4 class="h5 mb-0 fw-bold">Árboles de Decisión y Métodos Ensemble</h4>
+      </div>
+      <div class="card-body p-4">
+        
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="h-100 p-3 rounded" style="background: rgba(245, 158, 11, 0.1);">
+              <h6 class="fw-bold mb-3">
+                <i class="fas fa-sitemap me-2 text-warning"></i>Árbol de Decisión
+              </h6>              <div class="mb-3">
+                <!-- Fixed: Better contrast for math formulas -->
+                <div class="math-formula p-2 rounded" style="font-size: 0.8rem;">
+                  <div class="mb-1">$$G = 1 - \sum_k p_k^2$$</div>
+                  <div>$$H = - \sum_k p_k \log p_k$$</div>
+                </div>
+                <small class="text-muted">Criterios: Gini y Entropía</small>
+              </div>
+              <div class="small">
+                <div class="mb-2"><strong>Ventaja:</strong> Altamente interpretable</div>
+                <div class="mb-3"><strong>Desventaja:</strong> Propenso a sobreajuste</div>
+                <div class="text-muted">
+                  <i class="fas fa-lightbulb me-1"></i>
+                  <strong>Uso:</strong> Aprobación de créditos bancarios
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="h-100 p-3 rounded" style="background: rgba(16, 185, 129, 0.1);">
+              <h6 class="fw-bold mb-3">
+                <i class="fas fa-layer-group me-2 text-success"></i>Random Forest
+              </h6>
+              <div class="mb-3">
+                <p class="small mb-2">
+                  Combina múltiples árboles con bagging y selección aleatoria de características.
+                </p>
+              </div>
+              <div class="small">
+                <div class="mb-2"><strong>Ventaja:</strong> Robusto y preciso</div>
+                <div class="mb-3"><strong>Desventaja:</strong> Menos interpretable</div>
+                <div class="text-muted">
+                  <i class="fas fa-lightbulb me-1"></i>
+                  <strong>Uso:</strong> Predicción de enfermedades médicas
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="h-100 p-3 rounded" style="background: rgba(139, 92, 246, 0.1);">
+              <h6 class="fw-bold mb-3">
+                <i class="fas fa-rocket me-2 text-purple"></i>Gradient Boosting
+              </h6>              <div class="mb-3">
+                <!-- Fixed: Better contrast for math formulas -->
+                <div class="math-formula p-2 rounded">
+                  $$F_m(x) = F_{m-1}(x) + \nu \cdot h_m(x)$$
+                </div>
+                <small class="text-muted">Entrenamiento secuencial</small>
+              </div>
+              <div class="small">
+                <div class="mb-2"><strong>Ventaja:</strong> Alta precisión</div>
+                <div class="mb-3"><strong>Desventaja:</strong> Requiere tuning cuidadoso</div>
+                <div class="text-muted">
+                  <i class="fas fa-lightbulb me-1"></i>
+                  <strong>Uso:</strong> Ranking en motores de búsqueda
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Neural Networks and Cross-Cutting Topics -->
+    <div class="row g-4 mb-5">
+      
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.4s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, #ef4444, #dc2626) !important;">
+            <i class="fas fa-brain me-3" style="font-size: 1.5rem;"></i>
+            <h4 class="h5 mb-0 fw-bold">Redes Neuronales</h4>
+          </div>
+          <div class="card-body p-4">
+            
+            <div class="algorithm-item">
+              <h6 class="fw-bold mb-3">Perceptrón Multicapa (MLP)</h6>              <div class="mb-3">
+                <!-- Fixed: Better contrast for math formulas -->
+                <div class="math-formula p-2 rounded">
+                  $$\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}$$
+                </div>
+                <small class="text-muted">Activación softmax para multiclase</small>
+              </div>
+              
+              <p class="small mb-3">
+                Capas densas con activaciones ReLU, Sigmoid o Tanh para capturar patrones complejos no lineales.
+              </p>
+              
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <div class="p-2 rounded" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="small fw-bold text-success">Pros:</div>
+                    <div class="small">Muy flexible, patrones complejos</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-2 rounded" style="background: rgba(239, 68, 68, 0.1);">
+                    <div class="small fw-bold text-danger">Contras:</div>
+                    <div class="small">Requiere muchos datos</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="small text-muted">
+                <i class="fas fa-lightbulb me-1"></i>
+                <strong>Ejemplo:</strong> Reconocimiento de dígitos escritos a mano
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.5s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, #6b7280, #4b5563) !important;">
+            <i class="fas fa-cogs me-3" style="font-size: 1.5rem;"></i>
+            <h4 class="h5 mb-0 fw-bold">Tópicos Transversales</h4>
+          </div>
+          <div class="card-body p-4">
+            
+            <!-- Preprocessing -->
+            <div class="mb-4">
+              <h6 class="fw-bold text-primary mb-2">
+                <i class="fas fa-tools me-2"></i>Preprocesamiento
+              </h6>
+              <ul class="small mb-0">
+                <li class="mb-1">Escalado (SVM, k-NN, MLP)</li>
+                <li class="mb-1">Codificación one-hot para categóricas</li>
+                <li class="mb-1">Imputación de valores faltantes</li>
+              </ul>
+            </div>
+
+            <!-- Metrics -->
+            <div>              <h6 class="fw-bold text-success mb-2">
+                <i class="fas fa-chart-bar me-2"></i>Métricas de Evaluación
+              </h6>              <!-- Enhanced: Mathematical formulas with theory label -->
+              <div class="recursos-academicos">
+                <div class="math-formula p-3 rounded" style="font-size: 0.75rem;">
+                  <div class="mb-2">$$\text{Accuracy} = \frac{VP + VN}{VP + FP + VN + FN}$$</div>
+                  <div class="mb-2">$$\text{Precision} = \frac{VP}{VP + FP}$$</div>
+                  <div class="mb-2">$$\text{Recall} = \frac{VP}{VP + FN}$$</div>
+                  <div>$$F1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$</div>
+                </div>
+              </div>
+              <div class="small text-muted mt-2">
+                <i class="fas fa-lightbulb me-1"></i>
+                <strong>Ejemplo:</strong> Optimizar Recall en detección de fraudes
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- References Section -->
+    <div class="card border-0 shadow-sm animate-fade-in-up" style="animation-delay: 0.6s;">
+      <div class="card-header bg-gradient text-white d-flex align-items-center" 
+           style="background: linear-gradient(135deg, #374151, #1f2937) !important;">
+        <i class="fas fa-book me-3" style="font-size: 1.2rem;"></i>
+        <h4 class="h6 mb-0 fw-bold">Referencias Bibliográficas (APA 7)</h4>
+      </div>
+      <div class="card-body p-4">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <h6 class="fw-bold text-primary mb-3">Algoritmos Específicos</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                Fernández, A. (2023). <em>Programar kNN desde cero en R</em>. 
+                <a href="https://anderfernandez.com/blog/programar-knn-r/" target="_blank" class="text-decoration-none">
+                  anderfernandez.com
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                IBM. (2024). <em>¿Qué es el algoritmo KNN?</em> 
+                <a href="https://www.ibm.com/mx-es/think/topics/knn" target="_blank" class="text-decoration-none">
+                  ibm.com
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                Wikipedia. (s.f.). <em>Clasificador bayesiano ingenuo</em>. 
+                <a href="https://es.wikipedia.org/wiki/Clasificador_bayesiano_ingenuo" target="_blank" class="text-decoration-none">
+                  wikipedia.org
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                IBM. (s.f.). <em>¿Qué es XGBoost?</em> 
+                <a href="https://www.ibm.com/es-es/think/topics/xgboost" target="_blank" class="text-decoration-none">
+                  ibm.com
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="col-lg-6">
+            <h6 class="fw-bold text-success mb-3">Métodos Ensemble y Técnicas</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                CienciaDeDatos.net. (2021). <em>Grid search Random Forest con OOB</em>. 
+                <a href="https://cienciadedatos.net/documentos/py36-grid-search-random-forest-out-of-bag-error-early-stopping" target="_blank" class="text-decoration-none">
+                  cienciadedatos.net
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                CienciaDeDatos.net. (s.f.). <em>Gradient Boosting con Python</em>. 
+                <a href="https://cienciadedatos.net/documentos/py09_gradient_boosting_python" target="_blank" class="text-decoration-none">
+                  cienciadedatos.net
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                DataCamp. (2024). <em>Perceptrones multicapa: Guía completa</em>. 
+                <a href="https://www.datacamp.com/es/tutorial/multilayer-perceptrons-in-machine-learning" target="_blank" class="text-decoration-none">
+                  datacamp.com
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                Google Developers. (2025). <em>Métricas de clasificación</em>. 
+                <a href="https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall?hl=es-419" target="_blank" class="text-decoration-none">
+                  developers.google.com
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <h6 class="fw-bold text-warning mb-3">Preprocesamiento y Técnicas</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                Colab (Waissman, J.). (2024). <em>Preprocesamiento con ColumnTransformer</em>. 
+                <a href="https://colab.research.google.com/github/ml-unison/ml-unison.github.io/blob/main/ejemplos/preprocesamiento.ipynb" target="_blank" class="text-decoration-none">
+                  colab.research.google.com
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                DataCamp. (2024). <em>One-hot encoding en Python</em>. 
+                <a href="https://www.datacamp.com/es/tutorial/one-hot-encoding-python-tutorial" target="_blank" class="text-decoration-none">
+                  datacamp.com
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="col-lg-6">
+            <h6 class="fw-bold text-info mb-3">Recursos Adicionales</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                LabEx. (s.f.). <em>Regularización en MLP</em>. 
+                <a href="https://labex.io/es/tutorials/ml-multi-layer-perceptron-regularization-49214" target="_blank" class="text-decoration-none">
+                  labex.io
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-external-link-alt me-2 text-muted"></i>
+                TheMachineLearners. (s.f.). <em>Métricas de clasificación</em>. 
+                <a href="https://www.themachinelearners.com/metricas-de-clasificacion/" target="_blank" class="text-decoration-none">
+                  themachinelearners.com
+                </a>
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-robot me-2 text-muted"></i>
+                OpenAI. (2025). ChatGPT (versión GPT-4) [Modelo de lenguaje grande]. OpenAI.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
-   <!-- Bootstrap JS (para dropdowns) -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

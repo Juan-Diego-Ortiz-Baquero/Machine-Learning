@@ -1,62 +1,206 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('home') }}">ML</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
-            aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+<!-- Professional Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark ml-navbar">
+  <div class="container-fluid px-4">
+    <!-- Brand Logo -->
+    <a class="navbar-brand ml-brand" href="{{ url_for('home') }}">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+        <rect width="32" height="32" rx="6" fill="url(#logoGradient)"/>
+        <path d="M8 12h3v8H8zM13 8h3v12h-3zM18 15h3v5h-3zM23 10h3v10h-3z" fill="white"/>
+        <defs>
+          <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#06b6d4"/>
+            <stop offset="100%" style="stop-color:#2563eb"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="brand-text">ML Platform</span>
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button class="navbar-toggler ml-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div id="nav" class="collapse navbar-collapse">
-      <ul class="navbar-nav">
-        <!-- Inicio -->
+    <!-- Navigation Menu -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">        <!-- Home -->
         <li class="nav-item">
-          <a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="{{ url_for('home') }}">Inicio</a>
+          <a class="nav-link ml-nav-link {% if active_page == 'home' %}active{% endif %}" 
+             href="{{ url_for('home') }}">
+            <i class="fas fa-home me-2"></i>
+            <span>Inicio</span>
+          </a>
         </li>
 
-        <!-- Casos -->
+        <!-- Cases -->
         <li class="nav-item">
-          <a class="nav-link {% if active_page == 'casos' %}active{% endif %}" href="{{ url_for('casos_view') }}">Casos</a>
+          <a class="nav-link ml-nav-link {% if active_page == 'casos' %}active{% endif %}" 
+             href="{{ url_for('casos_view') }}">
+            <i class="fas fa-briefcase me-2"></i>
+            <span>Casos de Uso</span>
+          </a>
         </li>
 
-        <!-- Regresión lineal -->
+        <!-- Linear Regression -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle {% if active_page in ['regresion_conceptos','regresion_ejercicio'] %}active{% endif %}"
-             href="javascript:void(0)" id="regresionDropdown" role="button"
+          <a class="nav-link dropdown-toggle ml-nav-link {% if active_page in ['regresion_conceptos','regresion_ejercicio'] %}active{% endif %}"
+             href="#" id="regresionDropdown" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
-            Regresión lineal
+            <i class="fas fa-chart-line me-2"></i>
+            <span>Regresión Lineal</span>
           </a>
-          <ul class="dropdown-menu" aria-labelledby="regresionDropdown">
-            <li><a class="dropdown-item {% if active_page == 'regresion_conceptos' %}active{% endif %}" href="{{ url_for('regresion_conceptos') }}">Conceptos básicos</a></li>
-            <li><a class="dropdown-item {% if active_page == 'regresion_ejercicio' %}active{% endif %}" href="{{ url_for('regresion_ejercicio') }}">Ejercicio práctico</a></li>
+          <ul class="dropdown-menu ml-dropdown" aria-labelledby="regresionDropdown">
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'regresion_conceptos' %}active{% endif %}" 
+                 href="{{ url_for('regresion_conceptos') }}">
+                <i class="fas fa-book me-2"></i>
+                <span>Conceptos Básicos</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'regresion_ejercicio' %}active{% endif %}" 
+                 href="{{ url_for('regresion_ejercicio') }}">
+                <i class="fas fa-calculator me-2"></i>
+                <span>Ejercicio Práctico</span>
+              </a>
+            </li>
+          </ul>
+        </li>        <!-- Logistic Regression -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle ml-nav-link {% if active_page in ['r_logistica_concepto','r_logistica_ejercicio'] %}active{% endif %}"
+             href="#" id="logisticaDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-project-diagram me-2"></i>
+            <span>Regresión Logística</span>
+          </a>
+          <ul class="dropdown-menu ml-dropdown" aria-labelledby="logisticaDropdown">
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'r_logistica_concepto' %}active{% endif %}" 
+                 href="{{ url_for('r_logistica_conceptos') }}">
+                <i class="fas fa-book me-2"></i>
+                <span>Conceptos Básicos</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'r_logistica_ejercicio' %}active{% endif %}" 
+                 href="{{ url_for('r_logistica_ejercicio') }}">
+                <i class="fas fa-calculator me-2"></i>
+                <span>Ejercicio Práctico</span>
+              </a>
+            </li>
+          </ul>
+        </li>        <!-- Classification -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle ml-nav-link {% if active_page in ['clasificacion_conceptos','clasificacion_ejercicio'] %}active{% endif %}"
+             href="#" id="clasificacionDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-sitemap me-2"></i>
+            <span>Clasificación</span>
+          </a>
+          <ul class="dropdown-menu ml-dropdown" aria-labelledby="clasificacionDropdown">
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'clasificacion_conceptos' %}active{% endif %}" 
+                 href="{{ url_for('clasificacion_conceptos') }}">
+                <i class="fas fa-book me-2"></i>
+                <span>Conceptos Básicos</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'clasificacion_ejercicio' %}active{% endif %}" 
+                 href="{{ url_for('clasificacion_ejercicio') }}">
+                <i class="fas fa-flask me-2"></i>
+                <span>Caso Práctico</span>
+              </a>
+            </li>
           </ul>
         </li>
 
-        <!-- Regresión logística -->
+        <!-- Reinforcement Learning -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle {% if active_page in ['r_logistica_conceptos','r_logistica_ejercicio'] %}active{% endif %}"
-             href="javascript:void(0)" id="logisticaDropdown" role="button"
+          <a class="nav-link dropdown-toggle ml-nav-link {% if active_page in ['rl_conceptos','rl_ejercicio'] %}active{% endif %}"
+             href="#" id="reinforcementDropdown" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
-            Regresión logística
+            <i class="fas fa-robot me-2"></i>
+            <span>Aprendizaje por Refuerzo</span>
           </a>
-          <ul class="dropdown-menu" aria-labelledby="logisticaDropdown">
-            <li><a class="dropdown-item {% if active_page == 'r_logistica_conceptos' %}active{% endif %}" href="{{ url_for('r_logistica_conceptos') }}">Conceptos básicos</a></li>
-            <li><a class="dropdown-item {% if active_page == 'r_logistica_ejercicio' %}active{% endif %}" href="{{ url_for('r_logistica_ejercicio') }}">Ejercicio práctico</a></li>
+          <ul class="dropdown-menu ml-dropdown" aria-labelledby="reinforcementDropdown">
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'rl_conceptos' %}active{% endif %}" 
+                 href="{{ url_for('rl_conceptos') }}">
+                <i class="fas fa-book me-2"></i>
+                <span>Conceptos Básicos</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item ml-dropdown-item {% if active_page == 'rl_ejercicio' %}active{% endif %}" 
+                 href="{{ url_for('rl_ejercicio') }}">
+                <i class="fas fa-gamepad me-2"></i>
+                <span>Caso Práctico</span>
+              </a>
+            </li>
           </ul>
-        </li>
-
-        <!-- Clasificación -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle {% if active_page in ['clasificacion_conceptos','clasificacion_ejercicio'] %}active{% endif %}"
-             href="javascript:void(0)" id="clasificacionDropdown" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false">
-            Tipos de Algoritmos de Clasificación
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="clasificacionDropdown">
-            <li><a class="dropdown-item {% if active_page == 'clasificacion_conceptos' %}active{% endif %}" href="{{ url_for('clasificacion_conceptos') }}">Conceptos básicos</a></li>
-            <li><a class="dropdown-item {% if active_page == 'clasificacion_ejercicio' %}active{% endif %}" href="{{ url_for('clasificacion_ejercicio') }}">Caso práctico</a></li>
-          </ul>
-        </li>
-      </ul>
+        </li>      </ul>
     </div>
   </div>
 </nav>
+
+<!-- Bootstrap Dropdown Initialization Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Navbar script loaded');
+  
+  // Check if Bootstrap is loaded
+  if (typeof bootstrap !== 'undefined') {
+    console.log('Bootstrap is available');
+    
+    // Initialize all dropdowns manually
+    const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+    console.log('Found ' + dropdownElementList.length + ' dropdown toggles');
+    
+    const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+      return new bootstrap.Dropdown(dropdownToggleEl);
+    });
+    console.log('Bootstrap dropdowns initialized');
+  } else {
+    console.log('Bootstrap not available, using fallback');
+  }
+
+  // Add click handlers for dropdown toggles as fallback
+  document.querySelectorAll('.dropdown-toggle').forEach(function(element) {
+    element.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Dropdown clicked: ' + this.id);
+      
+      const dropdownMenu = this.nextElementSibling;
+      const isOpen = dropdownMenu.classList.contains('show');
+      
+      // Close all other dropdowns
+      document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+        menu.classList.remove('show');
+      });
+      
+      // Toggle current dropdown
+      if (!isOpen) {
+        dropdownMenu.classList.add('show');
+        console.log('Dropdown opened');
+      } else {
+        console.log('Dropdown closed');
+      }
+    });
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown')) {
+      document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+        menu.classList.remove('show');
+      });
+    }
+  });
+
+  console.log('Dropdown functionality initialized');
+});
+</script>
+
+

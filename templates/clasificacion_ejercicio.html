@@ -2,126 +2,419 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Clasificación — Caso práctico</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clasificación - Ejercicio Práctico con XGBoost | ML Platform</title>
+  <meta name="description" content="Caso práctico de clasificación usando XGBoost para aprobación de créditos con métricas de rendimiento y predicción interactiva.">
+  
+  <!-- Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
-
+<body style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh;">
   {% include 'navbar.html' %}
 
-  <main class="container text-start">
-    <h1 class="mb-4">Caso práctico de clasificación — XGBoost</h1>
+  <!-- Breadcrumb -->
+  <div class="container py-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('home') }}" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>Inicio
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('clasificacion_conceptos') }}" class="text-decoration-none">
+            <i class="fas fa-sitemap me-1"></i>Algoritmos de Clasificación
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Caso Práctico XGBoost</li>
+      </ol>
+    </nav>
+  </div>
 
-    <!-- Descripción del dataset -->
-    <div class="card mb-4">
-      <div class="card-header">Descripción del dataset</div>
-      <div class="card-body">
-        <ul class="mb-0">
-          <li><strong>Variables numéricas:</strong> nivel_endeudamiento, ingresos_mensuales, edad (imputación por mediana).</li>
-          <li><strong>Variables categóricas:</strong> historial_crediticio, tipo_empleo (imputación + one-hot).</li>
-          <li><strong>Clase positiva:</strong> aprobacion = Sí → 1; No → 0.</li>
-          <li><strong>Split:</strong> 80/20 con estratificación y semilla fija.</li>
-          <li><strong>Modelo:</strong> XGBoost con n_estimators=300, max_depth=4, learning_rate=0.08.</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Exactitud -->
-         <div class="card mb-4">
-      <div class="card-header">Exactitud (Accuracy)</div>
-      <div class="card-body">
-        <h2>{{ accuracy }}</h2>
-      </div>
-    </div>
-    <div class="alert alert-secondary mt-2">
-          <strong>Nota:</strong> La exactitud (accuracy) mide el porcentaje de predicciones correctas sobre el total de casos de prueba.
-          Sin embargo, no siempre refleja bien el desempeño si las clases están desbalanceadas. 
-          Por eso también mostramos precisión, recall y F1-score en el reporte de clasificación.
+  <!-- Hero Section -->
+  <section class="py-4" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 30px 30px;"></div>
+    
+    <div class="container position-relative">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="display-5 fw-bold mb-3">
+            <i class="fas fa-rocket me-3"></i>
+            Caso Práctico: XGBoost
+          </h1>
+          <p class="lead mb-3" style="opacity: 0.9;">
+            Modelo de clasificación avanzado para <strong>aprobación de créditos</strong> 
+            usando XGBoost con métricas de rendimiento completas
+          </p>              <!-- Fixed: Better contrast for badges on colored background -->              <div class="d-flex flex-wrap gap-2">
+            <span class="badge px-4 py-2" style="background: white; color: var(--primary-color); font-weight: 600; font-size: 0.9rem;">
+              <i class="fas fa-chart-line me-2" style="color: var(--primary-color);"></i>XGBoost Classifier
+            </span>
+            <span class="badge px-4 py-2" style="background: white; color: var(--success-color); font-weight: 600; font-size: 0.9rem;">
+              <i class="fas fa-percentage me-2" style="color: var(--success-color);"></i>{{ "%.1f"|format(accuracy * 100) }}% Precisión
+            </span>
+            <span class="badge px-4 py-2" style="background: white; color: var(--warning-color); font-weight: 600; font-size: 0.9rem;">
+              <i class="fas fa-credit-card me-2" style="color: var(--warning-color);"></i>Aprobación de Créditos
+            </span>
+          </div>
         </div>
+        <div class="col-lg-4 text-center">
+          <div class="d-inline-flex align-items-center justify-content-center" 
+               style="width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;">
+            <i class="fas fa-brain" style="font-size: 4rem;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Reporte de clasificación -->
-    <h3>Reporte de clasificación</h3>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Clase</th>
-          <th>Precision</th>
-          <th>Recall</th>
-          <th>F1-score</th>
-          <th>Support</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for clase, datos in report.items() if clase in ['0','1'] %}
-        <tr>
-          <td>{{ clase }}</td>
-          <td>{{ datos['precision']|round(3) }}</td>
-          <td>{{ datos['recall']|round(3) }}</td>
-          <td>{{ datos['f1-score']|round(3) }}</td>
-          <td>{{ datos['support'] }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <main class="container py-5">
+    
+    <!-- Dataset Information -->
+    <div class="card border-0 shadow-sm mb-4 animate-fade-in-up">
+      <div class="card-header bg-gradient text-white d-flex align-items-center" 
+           style="background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;">
+        <i class="fas fa-database me-3" style="font-size: 1.5rem;"></i>
+        <h3 class="h5 mb-0 fw-bold">Configuración del Dataset y Modelo</h3>
+      </div>
+      <div class="card-body p-4">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <h6 class="fw-bold text-primary mb-3">
+              <i class="fas fa-chart-bar me-2"></i>Variables del Dataset
+            </h6>
+            <div class="mb-3">
+              <div class="small fw-bold text-success mb-2">Variables Numéricas:</div>
+              <ul class="small mb-0">
+                <li>Nivel de endeudamiento (0-1)</li>
+                <li>Ingresos mensuales</li>
+                <li>Edad (imputación por mediana)</li>
+              </ul>
+            </div>
+            <div>
+              <div class="small fw-bold text-warning mb-2">Variables Categóricas:</div>
+              <ul class="small mb-0">
+                <li>Historial crediticio (one-hot encoding)</li>
+                <li>Tipo de empleo (imputación + one-hot)</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <h6 class="fw-bold text-success mb-3">
+              <i class="fas fa-cogs me-2"></i>Configuración del Modelo
+            </h6>
+            <div class="bg-light p-3 rounded">
+              <div class="row g-2 small">
+                <div class="col-6">
+                  <strong>Algoritmo:</strong> XGBoost
+                </div>
+                <div class="col-6">
+                  <strong>n_estimators:</strong> 300
+                </div>
+                <div class="col-6">
+                  <strong>max_depth:</strong> 4
+                </div>
+                <div class="col-6">
+                  <strong>learning_rate:</strong> 0.08
+                </div>
+                <div class="col-6">
+                  <strong>Split:</strong> 80/20
+                </div>
+                <div class="col-6">
+                  <strong>Estratificación:</strong> Sí
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="alert alert-info border-0 mt-4" style="background: rgba(59, 130, 246, 0.1);">
+          <div class="d-flex align-items-start">
+            <i class="fas fa-target me-3 mt-1 text-primary"></i>
+            <div>
+              <strong>Variable Objetivo:</strong> Aprobación del crédito
+              <div class="mt-1">
+                <span class="badge bg-success me-2">1 = Aprobado</span>
+                <span class="badge bg-danger">0 = Rechazado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- Matriz de confusión -->
-    <h3>Matriz de confusión</h3>
-    <img src="{{ url_for('static', filename=confusion_filename) }}" alt="Matriz de confusión (Real 0/1 vs Predicho 0/1)" class="img-fluid mb-4">
+    <!-- Accuracy Card -->
+    <div class="card border-0 shadow-sm mb-4 animate-fade-in-up" style="animation-delay: 0.1s;">
+      <div class="card-header bg-gradient text-white d-flex align-items-center justify-content-between" 
+           style="background: linear-gradient(135deg, #10b981, #059669) !important;">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-bullseye me-3" style="font-size: 1.5rem;"></i>
+          <h3 class="h5 mb-0 fw-bold">Precisión General del Modelo</h3>
+        </div>
+        <span class="badge bg-light text-dark fs-6">
+          <i class="fas fa-chart-pie me-1"></i>Accuracy
+        </span>
+      </div>
+      <div class="card-body p-4 text-center">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="display-3 fw-bold text-success mb-2">{{ "%.1f"|format(accuracy * 100) }}%</div>
+            <p class="text-muted mb-0">Predicciones correctas del total de casos de prueba</p>
+          </div>
+          <div class="col-lg-6">
+            <div class="alert alert-warning border-0 text-start" style="background: rgba(245, 158, 11, 0.1);">
+              <i class="fas fa-info-circle me-2 text-warning"></i>
+              <small>
+                <strong>Nota:</strong> La exactitud mide el porcentaje de predicciones correctas, 
+                pero puede no reflejar bien el desempeño si las clases están desbalanceadas. 
+                Por eso se incluyen métricas adicionales como precisión, recall y F1-score.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    <!-- Performance Metrics and Visualization -->
+    <div class="row g-4 mb-4">
+      
+      <!-- Classification Report -->
+      <div class="col-lg-7">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.2s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, #f59e0b, #d97706) !important;">
+            <i class="fas fa-chart-bar me-3" style="font-size: 1.5rem;"></i>
+            <h3 class="h5 mb-0 fw-bold">Métricas de Clasificación</h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr style="background: rgba(245, 158, 11, 0.1);">
+                    <th class="fw-bold">Clase</th>
+                    <th class="fw-bold text-center">Precisión</th>
+                    <th class="fw-bold text-center">Recall</th>
+                    <th class="fw-bold text-center">F1-Score</th>
+                    <th class="fw-bold text-center">Support</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for clase, datos in report.items() if clase in ['0','1'] %}
+                  <tr>
+                    <td class="fw-medium">
+                      {% if clase == '0' %}
+                        <span class="badge bg-danger me-2">Rechazado</span>
+                      {% else %}
+                        <span class="badge bg-success me-2">Aprobado</span>
+                      {% endif %}
+                      ({{ clase }})
+                    </td>
+                    <td class="text-center">{{ datos['precision']|round(3) }}</td>
+                    <td class="text-center">{{ datos['recall']|round(3) }}</td>
+                    <td class="text-center">{{ datos['f1-score']|round(3) }}</td>
+                    <td class="text-center">{{ datos['support'] }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Metrics Explanation -->
+            <div class="row g-3 mt-3">
+              <div class="col-md-4">
+                <div class="text-center p-3 rounded" style="background: rgba(16, 185, 129, 0.1);">
+                  <i class="fas fa-target text-success mb-2" style="font-size: 1.2rem;"></i>
+                  <div class="small fw-medium text-success">Precisión</div>
+                  <div class="small text-muted">VP/(VP+FP)</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center p-3 rounded" style="background: rgba(245, 158, 11, 0.1);">
+                  <i class="fas fa-search text-warning mb-2" style="font-size: 1.2rem;"></i>
+                  <div class="small fw-medium text-warning">Recall</div>
+                  <div class="small text-muted">VP/(VP+FN)</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center p-3 rounded" style="background: rgba(59, 130, 246, 0.1);">
+                  <i class="fas fa-balance-scale text-primary mb-2" style="font-size: 1.2rem;"></i>
+                  <div class="small fw-medium text-primary">F1-Score</div>
+                  <div class="small text-muted">Media armónica</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Formulario de predicción -->
-    <h3>Predicción</h3>
-    <form method="post" class="row g-3 mb-4" onsubmit="return validarFormulario()">
-      <div class="col-md-6">
-        <label class="form-label">Historial crediticio</label>
-        <select name="historial_crediticio" class="form-select" required>
-          {% for opt in ['Excelente','Bueno','Regular','Malo'] %}
-            <option value="{{ opt }}" {% if valores and valores.historial_crediticio == opt %}selected{% endif %}>{{ opt }}</option>
-          {% endfor %}
-        </select>
+      <!-- Confusion Matrix -->
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.3s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;">
+            <i class="fas fa-th me-3" style="font-size: 1.2rem;"></i>
+            <h5 class="mb-0 fw-bold">Matriz de Confusión</h5>
+          </div>
+          <div class="card-body p-4 text-center">
+            <img src="{{ url_for('static', filename=confusion_filename) }}" 
+                 alt="Matriz de confusión (Real 0/1 vs Predicho 0/1)" 
+                 class="img-fluid rounded shadow-sm mb-3"
+                 style="max-height: 300px;">
+            
+            <div class="alert alert-info border-0 text-start small" style="background: rgba(59, 130, 246, 0.1);">
+              <i class="fas fa-info-circle me-2 text-primary"></i>
+              <strong>Interpretación:</strong><br>
+              <span class="small">
+                <strong>Filas:</strong> Valores reales (0=Rechazado, 1=Aprobado)<br>
+                <strong>Columnas:</strong> Predicciones del modelo
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <label class="form-label">Tipo de empleo</label>
-        <select name="tipo_empleo" class="form-select" required>
-          {% for opt in ['Dependiente','Independiente','Temporal'] %}
-            <option value="{{ opt }}" {% if valores and valores.tipo_empleo == opt %}selected{% endif %}>{{ opt }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Nivel de endeudamiento (0–1)</label>
-        <input type="number" name="nivel_endeudamiento" class="form-control" step="0.01" min="0" max="1"
-               value="{{ valores.nivel_endeudamiento if valores else '' }}" required>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Ingresos mensuales</label>
-        <input type="number" name="ingresos_mensuales" class="form-control" step="10000" min="0"
-               value="{{ valores.ingresos_mensuales if valores else '' }}" required>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Edad</label>
-        <input type="number" name="edad" class="form-control" min="18" max="99"
-               value="{{ valores.edad if valores else '' }}" required>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Threshold</label>
-        <input type="number" name="threshold" class="form-control" step="0.05" min="0" max="1"
-               value="{{ prediccion.threshold if prediccion and prediccion.threshold is not none else 0.5 }}">
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Predecir</button>
-      </div>
-    </form>
 
-    <!-- Resultado de la predicción -->
-    {% if prediccion %}
-      <div class="alert alert-info">
-        <h4 class="mb-2"><strong>Predicción:</strong> {{ prediccion.label }}</h4>
-        <p class="mb-1"><strong>Probabilidad:</strong> {{ "%.4f"|format(prediccion.probabilidad) }}</p>
-        <p class="mb-0"><em>{{ prediccion.umbral_msg }}</em></p>
+    </div>    <!-- Interactive Prediction Form -->
+    <div class="card border-0 shadow-sm animate-fade-in-up" style="animation-delay: 0.4s;">
+      <div class="card-header bg-gradient text-white d-flex align-items-center" 
+           style="background: linear-gradient(135deg, #ef4444, #dc2626) !important;">
+        <i class="fas fa-calculator me-3" style="font-size: 1.5rem;"></i>
+        <h3 class="h5 mb-0 fw-bold">Simulador de Aprobación Crediticia</h3>
       </div>
-    {% endif %}
-  </main>
+      <div class="card-body p-4">
+        
+        <form method="post" class="prediction-form" onsubmit="return validarFormulario()">
+          
+          <!-- Personal Information Section -->
+          <div class="mb-4">
+            <h6 class="fw-bold text-primary mb-3">
+              <i class="fas fa-user me-2"></i>Información Personal y Laboral
+            </h6>
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-medium">
+                  <i class="fas fa-history me-2 text-info"></i>Historial crediticio
+                </label>
+                <select name="historial_crediticio" class="form-select form-control-modern" required>
+                  {% for opt in ['Excelente','Bueno','Regular','Malo'] %}
+                    <option value="{{ opt }}" {% if valores and valores.historial_crediticio == opt %}selected{% endif %}>{{ opt }}</option>
+                  {% endfor %}
+                </select>
+                <div class="form-text">Comportamiento histórico de pagos</div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label fw-medium">
+                  <i class="fas fa-briefcase me-2 text-warning"></i>Tipo de empleo
+                </label>
+                <select name="tipo_empleo" class="form-select form-control-modern" required>
+                  {% for opt in ['Dependiente','Independiente','Temporal'] %}
+                    <option value="{{ opt }}" {% if valores and valores.tipo_empleo == opt %}selected{% endif %}>{{ opt }}</option>
+                  {% endfor %}
+                </select>
+                <div class="form-text">Estabilidad laboral</div>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label fw-medium">
+                  <i class="fas fa-user-clock me-2 text-secondary"></i>Edad
+                </label>
+                <input type="number" name="edad" class="form-control form-control-modern" 
+                       min="18" max="99" placeholder="Ej: 35"
+                       value="{{ valores.edad if valores else '' }}" required>
+                <div class="form-text">Entre 18 y 99 años</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Information Section -->
+          <div class="mb-4">
+            <h6 class="fw-bold text-success mb-3">
+              <i class="fas fa-dollar-sign me-2"></i>Información Financiera
+            </h6>
+            
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-medium">
+                  <i class="fas fa-chart-line me-2 text-danger"></i>Nivel de endeudamiento
+                </label>
+                <input type="number" name="nivel_endeudamiento" class="form-control form-control-modern" 
+                       step="0.01" min="0" max="1" placeholder="Ej: 0.35"
+                       value="{{ valores.nivel_endeudamiento if valores else '' }}" required>
+                <div class="form-text">Proporción de deuda (0.0 - 1.0)</div>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label fw-medium">
+                  <i class="fas fa-money-bill-wave me-2 text-success"></i>Ingresos mensuales
+                </label>
+                <input type="number" name="ingresos_mensuales" class="form-control form-control-modern" 
+                       step="10000" min="0" placeholder="Ej: 3500000"
+                       value="{{ valores.ingresos_mensuales if valores else '' }}" required>
+                <div class="form-text">Ingresos en pesos colombianos</div>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label fw-medium">
+                  <i class="fas fa-sliders-h me-2 text-purple"></i>Umbral de decisión
+                </label>
+                <input type="number" name="threshold" class="form-control form-control-modern" 
+                       step="0.05" min="0" max="1" placeholder="0.5"
+                       value="{{ prediccion.threshold if prediccion and prediccion.threshold is not none else 0.5 }}">
+                <div class="form-text">Threshold para clasificación (0.0 - 1.0)</div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold">
+            <i class="fas fa-brain me-2"></i>Evaluar Solicitud de Crédito
+          </button>
+        </form>
+
+        <!-- Prediction Results -->
+        {% if prediccion %}
+        <div class="mt-4 pt-4 border-top">
+          <div class="text-center">
+            <h6 class="fw-bold text-primary mb-3">
+              <i class="fas fa-chart-pie me-2"></i>Resultado de la Evaluación
+            </h6>              <!-- Enhanced: Improved contrast and conditional styling for prediction results -->            <div class="card shadow-lg border-0 mb-4 prediction-card {% if 'Aprobado' in prediccion.label %}prediction-success{% else %}prediction-danger{% endif %}">
+              
+              <div class="card-body p-4 text-center prediction-body {% if 'Aprobado' in prediccion.label %}prediction-success{% else %}prediction-danger{% endif %}">
+                
+                <div class="display-5 font-weight-bold mb-3 prediction-text {% if 'Aprobado' in prediccion.label %}text-success{% else %}text-danger{% endif %}">
+                  <i class="{% if 'Aprobado' in prediccion.label %}fas fa-check-circle{% else %}fas fa-times-circle{% endif %} me-3"></i>
+                  {{ prediccion.label }}
+                </div>
+                
+                <div class="h5 mb-3" style="color: var(--text-primary);">
+                  <i class="fas fa-percentage me-2" style="color: var(--primary-color);"></i>
+                  <strong>Probabilidad: {{ "%.1f"|format(prediccion.probabilidad * 100) }}%</strong>
+                </div>
+                
+                <div class="alert {% if 'Aprobado' in prediccion.label %}alert-success{% else %}alert-danger{% endif %} border-0 shadow-sm">
+                  <i class="fas fa-info-circle me-2"></i>
+                  <strong>{{ prediccion.umbral_msg }}</strong>
+                </div>
+              </div>
+            </div>
+            
+            <div class="alert alert-info border-0 text-start small">
+              <i class="fas fa-lightbulb me-2"></i>
+              <strong>Interpretación:</strong> El modelo XGBoost 
+              {% if 'Aprobado' in prediccion.label %}
+                <strong class="text-success">RECOMIENDA APROBAR</strong> esta solicitud de crédito
+              {% else %}
+                <strong class="text-danger">RECOMIENDA RECHAZAR</strong> esta solicitud de crédito
+              {% endif %}
+              con una confianza del {{ "%.1f"|format(prediccion.probabilidad * 100) }}%.
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>  </main>
 
   <script>
     function validarFormulario() {
@@ -131,25 +424,52 @@
       const threshold = parseFloat(document.querySelector('[name="threshold"]').value);
 
       if (isNaN(nivel) || nivel < 0 || nivel > 1) {
-        alert("El nivel de endeudamiento debe estar entre 0 y 1.");
+        alert("⚠️ El nivel de endeudamiento debe estar entre 0 y 1.");
         return false;
       }
       if (isNaN(ingresos) || ingresos < 0) {
-        alert("Los ingresos mensuales deben ser un número positivo.");
+        alert("⚠️ Los ingresos mensuales deben ser un número positivo.");
         return false;
       }
       if (isNaN(edad) || edad < 18 || edad > 99) {
-        alert("La edad debe estar entre 18 y 99 años.");
+        alert("⚠️ La edad debe estar entre 18 y 99 años.");
         return false;
       }
       if (isNaN(threshold) || threshold < 0 || threshold > 1) {
-        alert("El threshold debe estar entre 0 y 1.");
+        alert("⚠️ El threshold debe estar entre 0 y 1.");
         return false;
       }
       return true;
     }
+    
+    // Enhanced form interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add loading state to form submission
+      const form = document.querySelector('.prediction-form');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      
+      form.addEventListener('submit', function() {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+        submitBtn.disabled = true;
+        
+        setTimeout(() => {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }, 3000);
+      });
+      
+      // Add input formatting for currency
+      const ingresosInput = document.querySelector('[name="ingresos_mensuales"]');
+      if (ingresosInput) {
+        ingresosInput.addEventListener('input', function() {
+          this.value = this.value.replace(/[^0-9]/g, '');
+        });
+      }
+    });
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

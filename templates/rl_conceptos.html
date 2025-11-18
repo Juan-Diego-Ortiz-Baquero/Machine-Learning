@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aprendizaje por Refuerzo: Conceptos Básicos — ML Platform</title>
+  <meta name="description" content="Aprende los fundamentos del aprendizaje por refuerzo: componentes, algoritmos Q-Learning, SARSA, DQN y aplicaciones prácticas.">
+  
+  <!-- Stylesheets -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+  
+  <!-- MathJax para renderizar LaTeX -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Custom CSS -->
+<style>
+  .rl-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 2rem;
+  }
+  
+  .concept-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #667eea;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .concept-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .concept-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .concept-icon i {
+    color: white;
+    font-size: 1.5rem;
+  }
+  
+  .algorithm-comparison {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .algorithm-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 3px solid #28a745;
+  }
+  
+  .formula-box {
+    background: #f1f3f4;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-left: 3px solid #667eea;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .best-practices {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .practice-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    backdrop-filter: blur(10px);
+  }
+</style>
+</style>
+</head>
+<body style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh;">
+  {% include 'navbar.html' %}
+
+  <!-- Breadcrumb -->
+  <div class="container py-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('home') }}" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>Inicio
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <i class="fas fa-robot me-1"></i>Aprendizaje por Refuerzo - Conceptos
+        </li>
+      </ol>
+    </nav>
+  </div>
+<!-- Hero Section -->
+<div class="rl-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-3">
+          <i class="fas fa-robot me-3"></i>
+          Aprendizaje por Refuerzo
+        </h1>
+        <p class="lead mb-4">
+          Descubre cómo los agentes inteligentes aprenden a tomar decisiones óptimas 
+          mediante la interacción con su entorno, recibiendo recompensas y castigos.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <span class="badge bg-light text-dark px-3 py-2">
+            <i class="fas fa-brain me-1"></i> Inteligencia Artificial
+          </span>
+          <span class="badge bg-light text-dark px-3 py-2">
+            <i class="fas fa-chart-line me-1"></i> Optimización
+          </span>
+          <span class="badge bg-light text-dark px-3 py-2">
+            <i class="fas fa-gamepad me-1"></i> Toma de Decisiones
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center">
+        <div style="font-size: 8rem; opacity: 0.3;">
+          <i class="fas fa-robot"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Introducción -->
+  <div class="concept-card">
+    <div class="concept-icon">
+      <i class="fas fa-lightbulb"></i>
+    </div>
+    <h2>¿Qué es el Aprendizaje por Refuerzo?</h2>
+    <p class="lead">
+      El <strong>Aprendizaje por Refuerzo (Reinforcement Learning)</strong> es un paradigma de 
+      aprendizaje automático donde un agente aprende a tomar decisiones secuenciales mediante 
+      la interacción con un entorno, recibiendo recompensas o castigos por sus acciones.
+    </p>
+    <p>
+      A diferencia del aprendizaje supervisado (que usa datos etiquetados) y no supervisado 
+      (que encuentra patrones ocultos), el RL se basa en el principio de <em>prueba y error</em>, 
+      donde el agente mejora su comportamiento a través de la experiencia acumulada.
+    </p>
+  </div>
+
+  <!-- Diferencias con otros tipos de aprendizaje -->
+  <div class="concept-card">
+    <div class="concept-icon">
+      <i class="fas fa-balance-scale"></i>
+    </div>
+    <h2>Diferencias con Otros Paradigmas</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="text-center p-3 border rounded">
+          <i class="fas fa-tags text-primary mb-2" style="font-size: 2rem;"></i>
+          <h5>Aprendizaje Supervisado</h5>
+          <ul class="text-start">
+            <li>Datos etiquetados</li>
+            <li>Función objetivo conocida</li>
+            <li>Predicciones directas</li>
+            <li>Ejemplo: Clasificación, Regresión</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="text-center p-3 border rounded">
+          <i class="fas fa-search text-warning mb-2" style="font-size: 2rem;"></i>
+          <h5>Aprendizaje No Supervisado</h5>
+          <ul class="text-start">
+            <li>Sin etiquetas</li>
+            <li>Descubre patrones ocultos</li>
+            <li>Estructura de datos</li>
+            <li>Ejemplo: Clustering, PCA</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="text-center p-3 border rounded bg-light">
+          <i class="fas fa-robot text-success mb-2" style="font-size: 2rem;"></i>
+          <h5>Aprendizaje por Refuerzo</h5>
+          <ul class="text-start">
+            <li>Interacción con entorno</li>
+            <li>Recompensas y castigos</li>
+            <li>Decisiones secuenciales</li>
+            <li>Ejemplo: Juegos, Robótica</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Componentes principales -->
+  <div class="concept-card">
+    <div class="concept-icon">
+      <i class="fas fa-cogs"></i>
+    </div>
+    <h2>Componentes Principales</h2>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="mb-4">
+          <h4><i class="fas fa-user-robot text-primary me-2"></i>Agente</h4>
+          <p>
+            Entidad que toma decisiones y ejecuta acciones. El agente observa el estado 
+            del entorno y selecciona acciones basándose en su política.
+          </p>
+        </div>
+        <div class="mb-4">
+          <h4><i class="fas fa-globe text-success me-2"></i>Entorno</h4>
+          <p>
+            Sistema con el que interactúa el agente. Define las reglas del juego, 
+            los estados posibles y las transiciones entre estados.
+          </p>
+        </div>
+        <div class="mb-4">
+          <h4><i class="fas fa-map-marker-alt text-info me-2"></i>Estados</h4>
+          <p>
+            Representación de la situación actual del entorno. Contiene toda la 
+            información necesaria para tomar decisiones.
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="mb-4">
+          <h4><i class="fas fa-running text-warning me-2"></i>Acciones</h4>
+          <p>
+            Conjunto de decisiones que puede tomar el agente en cada estado. 
+            Las acciones afectan la transición a nuevos estados.
+          </p>
+        </div>
+        <div class="mb-4">
+          <h4><i class="fas fa-trophy text-danger me-2"></i>Recompensas</h4>
+          <p>
+            Señal numérica que indica qué tan buena fue una acción. El objetivo 
+            del agente es maximizar la recompensa acumulada.
+          </p>
+        </div>
+        <div class="mb-4">
+          <h4><i class="fas fa-route text-purple me-2"></i>Política</h4>
+          <p>
+            Estrategia que define qué acción tomar en cada estado. Es lo que 
+            el agente aprende a optimizar.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Principios de aprendizaje -->
+  <div class="concept-card">
+    <div class="concept-icon">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <h2>Principios de Aprendizaje</h2>
+    
+    <h4>1. Exploración vs. Explotación</h4>
+    <p>
+      El agente debe balancear entre <strong>explorar</strong> nuevas acciones (para descubrir 
+      mejores estrategias) y <strong>explotar</strong> el conocimiento actual (para obtener 
+      recompensas conocidas).
+    </p>
+    
+    <h4>2. Delayed Rewards (Recompensas Retrasadas)</h4>
+    <p>
+      Las acciones pueden tener consecuencias a largo plazo. El agente debe aprender a 
+      valorar acciones que no dan recompensa inmediata pero llevan a estados valiosos.
+    </p>
+    
+    <h4>3. Credit Assignment (Asignación de Crédito)</h4>
+    <p>
+      Determinar qué acciones pasadas fueron responsables de las recompensas recibidas, 
+      especialmente en secuencias largas de decisiones.
+    </p>
+  </div>
+
+  <!-- Algoritmos principales -->
+  <div class="algorithm-comparison">
+    <h2 class="text-center mb-4">
+      <i class="fas fa-algorithm me-2"></i>
+      Algoritmos Principales
+    </h2>
+    
+    <div class="algorithm-card">
+      <h4><i class="fas fa-table text-primary me-2"></i>Q-Learning</h4>
+      <p>
+        Algoritmo <em>off-policy</em> que aprende el valor de las acciones (Q-values) 
+        sin necesidad de seguir una política específica durante el entrenamiento.
+      </p>
+      <div class="formula-box">
+        <strong>Fórmula de actualización:</strong><br>
+        Q(s,a) ← Q(s,a) + α[r + γ max Q(s',a') - Q(s,a)]
+      </div>
+      <ul>
+        <li><strong>α (alpha):</strong> Tasa de aprendizaje</li>
+        <li><strong>γ (gamma):</strong> Factor de descuento</li>
+        <li><strong>r:</strong> Recompensa inmediata</li>
+      </ul>
+    </div>
+    
+    <div class="algorithm-card">
+      <h4><i class="fas fa-route text-success me-2"></i>SARSA</h4>
+      <p>
+        Algoritmo <em>on-policy</em> que actualiza Q-values basándose en la acción 
+        que realmente tomará el agente según su política actual.
+      </p>
+      <div class="formula-box">
+        <strong>Fórmula de actualización:</strong><br>
+        Q(s,a) ← Q(s,a) + α[r + γ Q(s',a') - Q(s,a)]
+      </div>
+      <p>
+        La diferencia clave es que usa la acción a' que realmente se ejecutará, 
+        no la máxima como en Q-Learning.
+      </p>
+    </div>
+    
+    <div class="algorithm-card">
+      <h4><i class="fas fa-brain text-info me-2"></i>Deep Q-Network (DQN)</h4>
+      <p>
+        Extensión de Q-Learning que usa redes neuronales profundas para aproximar 
+        la función Q, permitiendo manejar espacios de estados complejos.
+      </p>
+      <ul>
+        <li><strong>Experience Replay:</strong> Almacena experiencias para entrenar</li>
+        <li><strong>Target Network:</strong> Red separada para estabilizar el entrenamiento</li>
+        <li><strong>CNN:</strong> Procesa información visual compleja</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Mejores prácticas -->
+  <div class="best-practices">
+    <h2 class="text-center mb-4">
+      <i class="fas fa-star me-2"></i>
+      Mejores Prácticas
+    </h2>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="practice-item">
+          <h5><i class="fas fa-chart-line me-2"></i>Diseño de Recompensas</h5>
+          <ul class="mb-0">
+            <li>Recompensas claras y consistentes</li>
+            <li>Evitar recompensas densas excesivas</li>
+            <li>Penalizar comportamientos no deseados</li>
+          </ul>
+        </div>
+        
+        <div class="practice-item">
+          <h5><i class="fas fa-balance-scale me-2"></i>Exploración</h5>
+          <ul class="mb-0">
+            <li>Usar estrategias ε-greedy</li>
+            <li>Decaimiento gradual de exploración</li>
+            <li>Considerar curiosity-driven exploration</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="practice-item">
+          <h5><i class="fas fa-cog me-2"></i>Hiperparámetros</h5>
+          <ul class="mb-0">
+            <li>Ajustar tasa de aprendizaje (α)</li>
+            <li>Optimizar factor de descuento (γ)</li>
+            <li>Experimentar con arquitecturas</li>
+          </ul>
+        </div>
+        
+        <div class="practice-item">
+          <h5><i class="fas fa-chart-bar me-2"></i>Evaluación</h5>
+          <ul class="mb-0">
+            <li>Métricas de rendimiento claras</li>
+            <li>Evaluación en múltiples episodios</li>
+            <li>Análisis de convergencia</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aplicaciones -->
+  <div class="concept-card">
+    <div class="concept-icon">
+      <i class="fas fa-rocket"></i>
+    </div>
+    <h2>Aplicaciones Reales</h2>
+    <div class="row">
+      <div class="col-md-3 text-center mb-3">
+        <i class="fas fa-gamepad text-primary mb-2" style="font-size: 3rem;"></i>
+        <h5>Videojuegos</h5>
+        <p class="small">AlphaGo, OpenAI Five, agentes de videojuegos</p>
+      </div>
+      <div class="col-md-3 text-center mb-3">
+        <i class="fas fa-robot text-success mb-2" style="font-size: 3rem;"></i>
+        <h5>Robótica</h5>
+        <p class="small">Control de robots, navegación autónoma</p>
+      </div>
+      <div class="col-md-3 text-center mb-3">
+        <i class="fas fa-car text-warning mb-2" style="font-size: 3rem;"></i>
+        <h5>Vehículos Autónomos</h5>
+        <p class="small">Conducción autónoma, optimización de rutas</p>
+      </div>
+      <div class="col-md-3 text-center mb-3">
+        <i class="fas fa-chart-line text-info mb-2" style="font-size: 3rem;"></i>
+        <h5>Finanzas</h5>
+        <p class="small">Trading algorítmico, gestión de portfolios</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call to Action -->
+  <div class="text-center py-5">
+    <h3 class="mb-4">¿Listo para practicar?</h3>
+    <p class="lead mb-4">
+      Experimenta con un agente Q-Learning en un entorno GridWorld y observa 
+      cómo aprende a navegar hacia la meta evitando obstáculos.
+    </p>
+    <a href="{{ url_for('rl_ejercicio') }}" class="btn btn-primary btn-lg">
+      <i class="fas fa-gamepad me-2"></i>
+      Ir al Ejercicio Práctico
+    </a>
+  </div>
+
+  <!-- Referencias -->
+  <div class="concept-card">
+    <div class="concept-icon">
+      <i class="fas fa-book"></i>
+    </div>
+    <h2>Referencias</h2>
+    <div class="references-list">
+      {% if referencias %}
+        <ol>
+          {% for ref in referencias %}
+            <li class="mb-2">{{ ref }}</li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+    </div>  </div>
+</div>
+
+  <!-- Bootstrap and Custom JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -2,47 +2,233 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Regresión logística — Conceptos básicos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regresión Logística: Conceptos Básicos — ML Platform</title>
+  <meta name="description" content="Aprende los fundamentos de la regresión logística: clasificación binaria, función sigmoide y aplicaciones prácticas con sklearn.">
+  
+  <!-- Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh;">
 
-  <!-- Navbar unificada -->
   {% include 'navbar.html' %}
 
-  <main class="container">
-    <h1 class="mb-4">Conceptos básicos de regresión logística</h1>
-
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5>Definición</h5>
-        <p>
-          La regresión logística es un modelo estadístico usado para problemas de clasificación, especialmente cuando la variable objetivo es binaria (0/1). Modela la probabilidad de que ocurra el evento positivo como una función de las variables independientes mediante la función sigmoide.
-        </p>
-        <p>
-          En términos de logit, el modelo expresa el logaritmo de las razones de momios como lineal en las variables: logit(p) = ln(p/(1−p)) = β₀ + β₁x₁ + … + βₖxₖ.
-        </p>
+  <!-- Hero Section -->
+  <section class="py-5" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+    
+    <div class="container text-center position-relative">
+      <div class="mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center" 
+             style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; margin-bottom: 1rem;">
+          <i class="fas fa-project-diagram" style="font-size: 3rem;"></i>
+        </div>
+      </div>
+      
+      <h1 class="display-4 fw-bold mb-3 animate-fade-in-up">
+        Regresión Logística
+      </h1>
+      <p class="lead mb-4 animate-fade-in-up" style="animation-delay: 0.1s; max-width: 600px; margin: 0 auto;">
+        Domina la clasificación binaria y multinomial con el algoritmo más utilizado 
+        para problemas de decisión y probabilidad
+      </p>
+      
+      <div class="d-flex justify-content-center gap-3 flex-wrap animate-fade-in-up" style="animation-delay: 0.2s;">
+        <span class="badge bg-light text-dark px-3 py-2">
+          <i class="fas fa-chart-pie me-1"></i>Clasificación
+        </span>
+        <span class="badge bg-light text-dark px-3 py-2">
+          <i class="fas fa-calculator me-1"></i>Función Sigmoide
+        </span>
+        <span class="badge bg-light text-dark px-3 py-2">
+          <i class="fas fa-percentage me-1"></i>Probabilidades
+        </span>
       </div>
     </div>
+  </section>
 
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5>Tipos y usos</h5>
-        <ul class="mb-0">
-          <li><strong>Binaria:</strong> dos categorías exclusivas (0/1).</li>
-          <li><strong>Multinomial:</strong> más de dos categorías sin orden.</li>
-          <li><strong>Ordinal:</strong> categorías con orden natural.</li>
-        </ul>
+  <main class="container py-5">
+    <!-- Main Content Cards -->
+    <div class="row g-4 mb-5">
+      <!-- Definition Card -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.1s;">
+          <div class="card-header text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, var(--warning-color), #d97706) !important;">
+            <i class="fas fa-lightbulb me-3" style="font-size: 1.5rem;"></i>
+            <h3 class="h5 mb-0 fw-bold">Definición y Fundamentos</h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-4">
+              <h4 class="h5 fw-bold text-warning mb-3">
+                <i class="fas fa-brain me-2"></i>¿Qué es la Regresión Logística?
+              </h4>
+              <p class="mb-3" style="line-height: 1.7; font-size: 1.05rem;">
+                La <strong>regresión logística</strong> es un modelo estadístico utilizado para problemas de 
+                <span class="text-warning fw-medium">clasificación</span>, especialmente cuando la variable objetivo 
+                es binaria (0/1). Modela la <span class="text-primary fw-medium">probabilidad</span> de que ocurra 
+                el evento positivo mediante la función sigmoide.
+              </p>
+              
+              <div class="alert alert-warning border-0" style="background: rgba(245, 158, 11, 0.1);">
+                <div class="d-flex align-items-start">
+                  <i class="fas fa-info-circle me-3 mt-1 text-warning"></i>
+                  <div>
+                    <strong>Diferencia Clave:</strong> Mientras la regresión lineal predice valores continuos, 
+                    la logística predice <strong>probabilidades</strong> y clasifica según un umbral (típicamente 0.5).
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h4 class="h5 fw-bold text-warning mb-3">
+                <i class="fas fa-formula me-2"></i>Ecuación Matemática (Logit)
+              </h4>
+              <div class="bg-light p-3 rounded" style="border-left: 4px solid var(--warning-color);">
+                <div class="text-center mb-2">
+                  <code style="font-size: 1.1rem; background: none; color: var(--text-primary);">
+                    logit(p) = ln(p/(1-p)) = β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ
+                  </code>
+                </div>
+                <div class="text-center mb-3">
+                  <code style="font-size: 1.1rem; background: none; color: var(--text-primary);">
+                    p = 1 / (1 + e^(-logit(p)))
+                  </code>
+                </div>
+                <div class="small text-muted">
+                  <strong>Donde:</strong><br>
+                  • <code>p</code> = Probabilidad del evento positivo<br>
+                  • <code>logit(p)</code> = Logaritmo de las razones de momios<br>
+                  • <code>β₀, β₁...βₙ</code> = Parámetros del modelo<br>
+                  • <code>x₁, x₂...xₙ</code> = Variables predictoras
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h4 class="h5 fw-bold text-warning mb-3">
+                <i class="fas fa-chart-line me-2"></i>Función Sigmoide
+              </h4>
+              <p class="mb-3">
+                La función sigmoide transforma cualquier valor real en un número entre 0 y 1, 
+                representando una probabilidad:
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="d-flex align-items-center justify-content-center" 
+                           style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.1); border-radius: 50%;">
+                        <i class="fas fa-arrow-up text-warning"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <h6 class="fw-bold mb-1">Forma S</h6>
+                      <p class="small text-muted mb-0">Curva característica que mapea valores reales a [0,1]</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="d-flex align-items-center justify-content-center" 
+                           style="width: 40px; height: 40px; background: rgba(37, 99, 235, 0.1); border-radius: 50%;">
+                        <i class="fas fa-balance-scale text-primary"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <h6 class="fw-bold mb-1">Umbral 0.5</h6>
+                      <p class="small text-muted mb-0">Punto de decisión para clasificación binaria</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5>Comparación con regresión lineal</h5>
-        <p>
-          La regresión lineal predice valores continuos; la logística predice probabilidades y clasifica según un umbral.
-        </p>
+      <!-- Types Card -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.2s;">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0 fw-bold">
+              <i class="fas fa-sitemap me-2"></i>Tipos de Regresión Logística
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <div class="flex-shrink-0 me-3">
+                  <div class="d-flex align-items-center justify-content-center" 
+                       style="width: 35px; height: 35px; background: rgba(16, 185, 129, 0.1); border-radius: 50%;">
+                    <i class="fas fa-toggle-off text-success"></i>
+                  </div>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-1">Binaria</h6>
+                  <p class="small text-muted mb-0">Dos categorías exclusivas (0/1, Sí/No)</p>
+                </div>
+              </div>
+              <div class="small text-muted ps-5">
+                <strong>Ejemplo:</strong> Aprobado/Reprobado, Spam/No Spam
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <div class="flex-shrink-0 me-3">
+                  <div class="d-flex align-items-center justify-content-center" 
+                       style="width: 35px; height: 35px; background: rgba(245, 158, 11, 0.1); border-radius: 50%;">
+                    <i class="fas fa-layer-group text-warning"></i>
+                  </div>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-1">Multinomial</h6>
+                  <p class="small text-muted mb-0">Más de dos categorías sin orden</p>
+                </div>
+              </div>
+              <div class="small text-muted ps-5">
+                <strong>Ejemplo:</strong> Rojo/Verde/Azul, Perro/Gato/Pájaro
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <div class="flex-shrink-0 me-3">
+                  <div class="d-flex align-items-center justify-content-center" 
+                       style="width: 35px; height: 35px; background: rgba(139, 92, 246, 0.1); border-radius: 50%;">
+                    <i class="fas fa-sort-numeric-up text-purple"></i>
+                  </div>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-1">Ordinal</h6>
+                  <p class="small text-muted mb-0">Categorías con orden natural</p>
+                </div>
+              </div>
+              <div class="small text-muted ps-5">
+                <strong>Ejemplo:</strong> Malo/Regular/Bueno/Excelente
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+              <div class="mb-3">
+                <div class="h4 fw-bold text-warning mb-1">1958</div>
+                <small class="text-muted">Año de desarrollo</small>
+              </div>
+              <div class="mb-3">
+                <div class="h4 fw-bold text-primary mb-1">85%</div>
+                <small class="text-muted">Uso en clasificación</small>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -57,7 +243,7 @@
       </div>
     </div>
   </main>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

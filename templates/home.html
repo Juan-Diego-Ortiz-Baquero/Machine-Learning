@@ -2,68 +2,339 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Machine Learning — Portada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Machine Learning Platform — Universidad de Cundinamarca</title>
+  <meta name="description" content="Plataforma educativa de Machine Learning con casos prácticos, regresión lineal, logística y algoritmos de clasificación.">
+  
+  <!-- Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh;">
 
-  <!-- Navbar unificada -->
+  <!-- Enhanced Navigation -->
   {% include 'navbar.html' %}
 
-  <main class="container py-5 text-center">
-
-    <!-- Imagen de la Universidad -->
-    <img src="{{ url_for('static', filename='udec_logo.png') }}" alt="Universidad de Cundinamarca" class="mb-4" style="max-width: 400px;">
-
-    <!-- Título más grande -->
-    <h1 class="display-3 fw-bold mb-5">MACHINE LEARNING</h1>
-
-    <div class="row g-4">
-      <div class="col-md-4">
-        <a href="{{ url_for('casos_view') }}" class="text-decoration-none">
-          <div class="card shadow-sm h-100">
-            <div class="card-body text-center">
-              <h2 class="h4">Casos de ML supervisado</h2>
-              <p class="text-muted">Explora casos reales con métricas y referencias.</p>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a href="{{ url_for('regresion_conceptos') }}" class="text-decoration-none">
-          <div class="card shadow-sm h-100">
-            <div class="card-body text-center">
-              <h2 class="h4">Regresión lineal</h2>
-              <p class="text-muted">Ejemplo práctico de predicción con sklearn.</p>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a href="{{ url_for('r_logistica_conceptos') }}" class="text-decoration-none">
-          <div class="card shadow-sm h-100">
-            <div class="card-body text-center">
-              <h2 class="h4">Regresión logística</h2>
-              <p class="text-muted">Modelo para variables binarias con probabilidad y umbral.</p>
-            </div>
-          </div>
-        </a>
+  <!-- Hero Section -->
+  <section class="hero-section" style="padding: 4rem 0; position: relative; overflow: hidden;">
+    <!-- Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.03; background-image: radial-gradient(circle at 1px 1px, #2563eb 1px, transparent 0); background-size: 40px 40px;"></div>
+    
+    <div class="container text-center position-relative">
+      <!-- University Logo with Animation -->
+      <div class="mb-4 animate-fade-in-up" style="animation-delay: 0.1s;">
+        <img src="{{ url_for('static', filename='udec_logo.png') }}" 
+             alt="Universidad de Cundinamarca" 
+             class="img-fluid shadow-lg"
+             style="max-width: 320px; border-radius: var(--radius-xl); transition: transform 0.3s ease;"
+             onmouseover="this.style.transform='scale(1.05)'"
+             onmouseout="this.style.transform='scale(1)'">
       </div>
 
-      <!-- NUEVA TARJETA: Clasificación -->
-      <div class="col-md-4">
-        <a href="{{ url_for('clasificacion_conceptos') }}" class="text-decoration-none">
-          <div class="card shadow-sm h-100">
-            <div class="card-body text-center">
-              <h2 class="h4">Tipos de Algoritmos de Clasificación</h2>
-              <p class="text-muted">Conceptos básicos y casos prácticos.</p>
-            </div>
-          </div>
+      <!-- Main Title -->
+      <h1 class="display-2 fw-bold mb-4 animate-fade-in-up" 
+          style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); 
+                 -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+                 background-clip: text; letter-spacing: -0.02em; animation-delay: 0.2s;">
+        MACHINE LEARNING
+      </h1>
+      
+      <!-- Subtitle -->
+      <p class="lead text-muted mb-5 animate-fade-in-up" 
+         style="max-width: 600px; margin: 0 auto; font-size: 1.25rem; animation-delay: 0.3s;">
+        Plataforma educativa interactiva para aprender algoritmos de Machine Learning 
+        con casos prácticos y ejercicios hands-on
+      </p>      <!-- Call to Action -->
+      <div class="mb-5 animate-fade-in-up" style="animation-delay: 0.4s;">
+        <a href="{{ url_for('casos_view') }}" class="btn btn-primary btn-lg me-3 mb-2 hover-lift">
+          <i class="fas fa-rocket me-2"></i>Explorar Casos
+        </a>
+        <a href="{{ url_for('regresion_conceptos') }}" class="btn btn-outline-primary btn-lg mb-2 hover-lift">
+          <i class="fas fa-play me-2"></i>Comenzar Tutorial
         </a>
       </div>
     </div>
-  </main>
+  </section>
 
+  <!-- Features Section -->
+  <section class="py-5">
+    <div class="container">
+      <!-- Section Header -->
+      <div class="text-center mb-5">
+        <h2 class="h1 fw-bold mb-3">Módulos de Aprendizaje</h2>
+        <p class="lead text-muted">Domina los conceptos fundamentales del Machine Learning</p>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="row g-4">        <!-- Cases Card -->
+        <div class="col-md-6 col-lg-4 animate-fade-in-up delay-100">
+          <a href="{{ url_for('casos_view') }}" class="text-decoration-none h-100">
+            <div class="card card-interactive h-100 shadow hover-lift">
+              <div class="card-body p-xl text-center">
+                <div class="mb-4">
+                  <div class="d-inline-flex align-items-center justify-content-center rounded-full mb-3" 
+                       style="width: 90px; height: 90px; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; font-size: 2.2rem; box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);">
+                    <i class="fas fa-briefcase"></i>
+                  </div>
+                </div>
+                <h3 class="h4 font-weight-bold mb-3 text-primary">Casos de Uso Reales</h3>
+                <p class="text-secondary mb-4" style="line-height: 1.6;">Explora implementaciones reales de ML en empresas como Netflix, Amazon y más, con métricas y resultados medibles.</p>
+                <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                  <span class="badge badge-primary">Casos Reales</span>
+                  <span class="badge badge-success">Métricas</span>
+                  <span class="badge badge-secondary">Referencias</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>        <!-- Linear Regression Card -->
+        <div class="col-md-6 col-lg-4 animate-fade-in-up delay-200">
+          <a href="{{ url_for('regresion_conceptos') }}" class="text-decoration-none h-100">
+            <div class="card card-interactive h-100 shadow hover-lift">
+              <div class="card-body p-xl text-center">
+                <div class="mb-4">
+                  <div class="d-inline-flex align-items-center justify-content-center rounded-full mb-3" 
+                       style="width: 90px; height: 90px; background: linear-gradient(135deg, var(--success-color), #047857); color: white; font-size: 2.2rem; box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);">
+                    <i class="fas fa-chart-line"></i>
+                  </div>
+                </div>
+                <h3 class="h4 font-weight-bold mb-3 text-primary">Regresión Lineal</h3>
+                <p class="text-secondary mb-4" style="line-height: 1.6;">Aprende predicción numérica con sklearn. Incluye teoría, implementación práctica y visualizaciones interactivas.</p>
+                <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                  <span class="sklearn-logo">
+                    <i class="fab fa-python"></i>Sklearn
+                  </span>
+                  <span class="badge badge-warning">Visualización</span>
+                  <span class="badge badge-secondary">Práctica</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Logistic Regression Card -->
+        <div class="col-md-6 col-lg-4 animate-fade-in-up delay-300">
+          <a href="{{ url_for('r_logistica_conceptos') }}" class="text-decoration-none h-100">
+            <div class="card card-interactive h-100 shadow hover-lift">
+              <div class="card-body p-xl text-center">
+                <div class="mb-4">
+                  <div class="d-inline-flex align-items-center justify-content-center rounded-full mb-3" 
+                       style="width: 90px; height: 90px; background: linear-gradient(135deg, var(--warning-color), #b45309); color: white; font-size: 2.2rem; box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);">
+                    <i class="fas fa-project-diagram"></i>
+                  </div>
+                </div>
+                <h3 class="h4 font-weight-bold mb-3 text-primary">Regresión Logística</h3>
+                <p class="text-secondary mb-4" style="line-height: 1.6;">Domina la clasificación binaria con probabilidades, curvas ROC y matrices de confusión en problemas reales.</p>
+                <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                  <span class="badge badge-warning">Clasificación</span>
+                  <span class="badge badge-primary">ROC</span>
+                  <span class="badge badge-danger">Confusion Matrix</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Classification Card -->
+        <div class="col-md-6 col-lg-4 animate-fade-in-up delay-500">
+          <a href="{{ url_for('clasificacion_conceptos') }}" class="text-decoration-none h-100">
+            <div class="card card-interactive h-100 shadow hover-lift">
+              <div class="card-body p-xl text-center">
+                <div class="mb-4">
+                  <div class="d-inline-flex align-items-center justify-content-center rounded-full mb-3" 
+                       style="width: 90px; height: 90px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 2.2rem; box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);">
+                    <i class="fas fa-sitemap"></i>
+                  </div>
+                </div>
+                <h3 class="h4 font-weight-bold mb-3 text-primary">Algoritmos de Clasificación</h3>
+                <p class="text-secondary mb-4" style="line-height: 1.6;">Explora diferentes algoritmos: Decision Trees, Random Forest, SVM y más, con comparativas y casos de uso.</p>
+                <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                  <span class="xgboost-badge">
+                    <i class="fas fa-rocket"></i>XGBoost
+                  </span>
+                  <span class="badge badge-primary">Random Forest</span>
+                  <span class="badge badge-success">SVM</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Interactive Learning Card -->
+        <div class="col-md-6 col-lg-4 animate-fade-in-up" style="animation-delay: 0.5s;">
+          <div class="card h-100 border-0" style="background: linear-gradient(135deg, #f3f4f6, #e5e7eb);">
+            <div class="card-body p-4 text-center">
+              <div class="mb-3">
+                <div class="d-inline-flex align-items-center justify-content-center" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #6b7280, #4b5563); border-radius: 50%; color: white; font-size: 2rem;">
+                  <i class="fas fa-code"></i>
+                </div>
+              </div>
+              <h3 class="h4 fw-bold mb-3" style="color: var(--text-primary);">Código Interactivo</h3>
+              <p class="text-muted mb-4">Experimenta con parámetros en tiempo real, visualiza resultados y comprende el impacto de cada decisión.</p>              <div class="d-flex justify-content-center gap-2 mb-3">
+                <span class="badge badge-primary">Python</span>
+                <span class="badge badge-secondary">Jupyter</span>
+                <span class="badge badge-success">Hands-on</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resources Card -->
+        <div class="col-md-6 col-lg-4 animate-fade-in-up" style="animation-delay: 0.6s;">
+          <div class="card h-100 border-0" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+            <div class="card-body p-4 text-center">
+              <div class="mb-3">
+                <div class="d-inline-flex align-items-center justify-content-center" 
+                     style="width: 80px; height: 80px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; color: white; font-size: 2rem;">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
+              </div>
+              <h3 class="h4 fw-bold mb-3" style="color: var(--text-primary);">Recursos Académicos</h3>
+              <p class="text-muted mb-4">Accede a papers, referencias bibliográficas y materiales complementarios para profundizar tu conocimiento.</p>              <div class="d-flex justify-content-center gap-2 mb-3">
+                <span class="badge badge-warning">Papers</span>
+                <span class="badge badge-secondary">Referencias</span>
+                <span class="badge badge-primary">Teoría</span>
+              </div>
+            </div>
+          </div>
+        </div>      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="py-5" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white;">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-3 mb-4">
+          <div class="h2 fw-bold mb-2" style="color: var(--accent-color);">4+</div>
+          <p class="mb-0">Algoritmos Cubiertos</p>
+        </div>
+        <div class="col-md-3 mb-4">
+          <div class="h2 fw-bold mb-2" style="color: var(--accent-color);">10+</div>
+          <p class="mb-0">Casos Reales</p>
+        </div>
+        <div class="col-md-3 mb-4">
+          <div class="h2 fw-bold mb-2" style="color: var(--accent-color);">100%</div>
+          <p class="mb-0">Hands-on Learning</p>
+        </div>
+        <div class="col-md-3 mb-4">
+          <div class="h2 fw-bold mb-2" style="color: var(--accent-color);">∞</div>
+          <p class="mb-0">Posibilidades</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-4" style="background: var(--bg-tertiary); border-top: 1px solid var(--border-color);">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p class="mb-0 text-muted">
+            <i class="fas fa-university me-2"></i>
+            Universidad de Cundinamarca - Machine Learning Platform
+          </p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <p class="mb-0 text-muted">
+            <i class="fas fa-code me-2"></i>
+            Desarrollado con Flask y Bootstrap 5
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Custom JavaScript for Enhanced Interactions -->
+  <script>
+    // Add smooth scrolling for better UX
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Add entrance animations on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.6s ease';
+      observer.observe(el);
+    });
+
+    // Add hover effects to cards
+    document.querySelectorAll('.card-interactive').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-8px) scale(1.02)';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Add loading state for navigation
+    document.querySelectorAll('a[href]').forEach(link => {
+      if (link.hostname === window.location.hostname) {
+        link.addEventListener('click', function() {
+          const loadingIndicator = document.createElement('div');
+          loadingIndicator.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            z-index: 9999;
+            animation: loading 1s ease-in-out infinite;
+          `;
+          document.body.appendChild(loadingIndicator);
+        });
+      }
+    });
+
+    // CSS for loading animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes loading {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      
+      .bg-purple {
+        background-color: #8b5cf6 !important;
+      }
+      
+      .badge {
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+        border-radius: var(--radius-sm);
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
