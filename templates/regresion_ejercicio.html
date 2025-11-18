@@ -2,93 +2,454 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Regresión lineal — Ejercicio práctico</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regresión Lineal - Ejercicio Práctico | ML Platform</title>
+  <meta name="description" content="Ejercicio interactivo de regresión lineal para predecir notas finales basado en horas de estudio y sueño.">
+  
+  <!-- Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
 
-  <!-- Navbar unificada -->
+  <!-- Enhanced Navigation -->
   {% include 'navbar.html' %}
 
-  <main class="container">
-    <h1 class="mb-3">Ejercicio práctico</h1>
-    <p class="text-muted">
-      Modelo entrenado para predecir la <strong>nota final</strong> en función de las
-      <em>horas de estudio</em> y <em>horas de sueño</em>.<br>
-      Entrenado con {{ descripcion_dataset.filas }} registros.<br>
-      R² del ajuste: {{ descripcion_dataset.r2 }}.
-    </p>
+  <!-- Breadcrumb -->
+  <div class="container py-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('home') }}" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>Inicio
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('regresion_conceptos') }}" class="text-decoration-none">
+            <i class="fas fa-chart-line me-1"></i>Regresión Lineal
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Ejercicio Práctico</li>
+      </ol>
+    </nav>
+  </div>
 
-    <!-- Tarjeta con explicación del dataset -->
-    <div class="card mb-4 border-info">
-      <div class="card-header bg-info text-white">
-        Explicación del dataset
-      </div>
-      <div class="card-body">
-        <p class="mb-0">{{ descripcion_texto }}</p>
+  <!-- Hero Section -->
+  <section class="hero-section" style="background: linear-gradient(135deg, var(--success-color), #047857); color: white; padding: 3rem 0; position: relative; overflow: hidden;">
+    <!-- Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 30px 30px;"></div>
+    
+    <div class="container position-relative">
+      <div class="text-center">
+        <!-- Icon -->
+        <div class="mb-4">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+               style="width: 100px; height: 100px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+            <i class="fas fa-calculator" style="font-size: 2.5rem; color: white;"></i>
+          </div>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="display-4 fw-bold mb-3">Ejercicio Práctico: Regresión Lineal</h1>
+        
+        <!-- Subtitle -->
+        <p class="lead mb-4" style="max-width: 600px; margin: 0 auto; opacity: 0.95;">
+          Modelo entrenado para predecir la <strong>nota final</strong> basado en 
+          <em>horas de estudio</em> y <em>horas de sueño</em>
+        </p>
+        
+        <!-- Badges -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <span class="badge px-4 py-2" style="background: rgba(255,255,255,0.2); color: white; font-weight: 600; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+            <i class="fas fa-database me-2"></i>{{ descripcion_dataset.filas }} registros
+          </span>
+          <span class="badge px-4 py-2" style="background: rgba(255,255,255,0.2); color: white; font-weight: 600; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+            <i class="fas fa-chart-bar me-2"></i>R² = {{ descripcion_dataset.r2 }}
+          </span>
+          <span class="sklearn-logo">
+            <i class="fab fa-python"></i>Sklearn
+          </span>
+        </div>
       </div>
     </div>
-
-    <!-- Tarjeta con flujo general -->
-    <div class="card mb-4 border-secondary">
-      <div class="card-header bg-secondary text-white">
-        Flujo general del modelo
+  </section>
+  <!-- Main Container -->
+  <main class="container py-5">
+    
+    <!-- Dataset Overview Section -->
+    <section class="mb-5">
+      <div class="text-center mb-4">
+        <h2 class="h3 fw-bold mb-2">Información del Dataset</h2>
+        <p class="text-muted">Conoce los datos utilizados para entrenar el modelo</p>
       </div>
-      <div class="card-body">
-        <pre class="mb-0">{{ workflow_description }}</pre>
-      </div>
-    </div>
+      
+      <div class="row g-4">
+        <!-- Dataset Description -->
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--accent-color), var(--accent-dark)); color: white;">
+              <h5 class="mb-0 fw-semibold">
+                <i class="fas fa-info-circle me-2"></i>Descripción del Dataset
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <p class="mb-0" style="line-height: 1.6; color: var(--text-secondary);">{{ descripcion_texto }}</p>
+            </div>
+          </div>
+        </div>
 
-    <div class="row g-4">
-      <div class="col-12 col-lg-7">
-        <div class="card h-100">
-          <div class="card-header">Datos de entrenamiento y línea de regresión</div>
-          <div class="card-body">
-            <img class="img-fluid" src="data:image/png;base64, {{ plot_png }}" alt="Gráfico de entrenamiento">
+        <!-- Model Workflow -->
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark)); color: white;">
+              <h5 class="mb-0 fw-semibold">
+                <i class="fas fa-cogs me-2"></i>Proceso del Modelo
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <div class="recursos-academicos">
+                <pre class="mb-0" style="white-space: pre-wrap; font-size: 0.85rem; line-height: 1.5; background: transparent; border: none; color: var(--text-primary);">{{ workflow_description }}</pre>
+              </div>
+            </div>
+          </div>        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Prediction Section -->
+    <section class="mb-5">
+      <div class="text-center mb-4">
+        <h2 class="h3 fw-bold mb-2">Predictor Interactivo</h2>
+        <p class="text-muted">Introduce los valores y obtén una predicción personalizada</p>
+      </div>
+      
+      <div class="row g-4 align-items-start">
+        <!-- Prediction Form -->
+        <div class="col-lg-5">
+          <div class="card border-0 shadow-lg">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--success-color), #047857); color: white;">
+              <h5 class="mb-0 fw-semibold">
+                <i class="fas fa-magic me-2"></i>Calculadora de Notas
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <form method="POST" action="{{ url_for('regresion_ejercicio') }}" id="predictionForm">
+                <!-- Study Hours Input -->
+                <div class="mb-4">
+                  <label class="form-label fw-semibold d-flex align-items-center">
+                    <i class="fas fa-book me-2" style="color: var(--primary-color);"></i>
+                    Horas de Estudio
+                  </label>
+                  <input type="number" 
+                         step="0.1" 
+                         min="0" 
+                         max="24"
+                         class="form-control form-control-lg" 
+                         name="x1" 
+                         placeholder="Ej: 5.5" 
+                         value="{{ valores.x1 if valores }}"
+                         required>
+                  <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>Ingresa entre 0 y 24 horas
+                  </div>
+                </div>
+                
+                <!-- Sleep Hours Input -->
+                <div class="mb-4">
+                  <label class="form-label fw-semibold d-flex align-items-center">
+                    <i class="fas fa-bed me-2" style="color: var(--accent-color);"></i>
+                    Horas de Sueño
+                  </label>
+                  <input type="number" 
+                         step="0.1" 
+                         min="0" 
+                         max="24"
+                         class="form-control form-control-lg" 
+                         name="x2" 
+                         placeholder="Ej: 8.0" 
+                         value="{{ valores.x2 if valores }}"
+                         required>
+                  <div class="form-text">
+                    <i class="fas fa-info-circle me-1"></i>Ingresa entre 0 y 24 horas
+                  </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-lg w-100 hover-lift">
+                  <i class="fas fa-calculator me-2"></i>Calcular Nota Final
+                </button>
+              </form>
+
+              <!-- Prediction Result -->
+              {% if prediccion is not none %}
+              <div class="mt-4">
+                <div class="alert alert-success border-0" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05)); border-left: 4px solid var(--success-color) !important;">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                           style="width: 50px; height: 50px; background: var(--success-color); color: white;">
+                        <i class="fas fa-trophy"></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="fw-bold mb-1" style="color: var(--success-color);">Predicción Completada</h6>
+                      <p class="mb-0">
+                        <strong>Nota Final Estimada:</strong> 
+                        <span class="fs-4 fw-bold" style="color: var(--success-color);">{{ "%.2f"|format(prediccion) }}/10</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Visualization Panel -->
+        <div class="col-lg-7">
+          <div class="card border-0 shadow-lg">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white;">
+              <div class="d-flex align-items-center justify-content-between">
+                <h5 class="mb-0 fw-semibold">
+                  <i class="fas fa-chart-area me-2"></i>Visualización del Modelo
+                </h5>
+                <span class="badge px-3 py-1" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                  <i class="fas fa-eye me-1"></i>Interactivo
+                </span>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <!-- Chart Display -->
+              <div class="text-center mb-4">
+                <img class="img-fluid rounded" 
+                     src="data:image/png;base64, {{ plot_png }}" 
+                     alt="Gráfico de regresión lineal con datos de entrenamiento"
+                     style="max-height: 400px; box-shadow: var(--card-shadow);">
+              </div>
+              
+              <!-- Chart Interpretation -->
+              <div class="alert alert-info border-0" style="background: linear-gradient(135deg, rgba(8, 145, 178, 0.1), rgba(14, 116, 144, 0.05)); border-left: 4px solid var(--accent-color) !important;">
+                <div class="d-flex align-items-start">
+                  <div class="me-3">
+                    <i class="fas fa-lightbulb" style="color: var(--accent-color); font-size: 1.1rem; margin-top: 2px;"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-semibold mb-2" style="color: var(--accent-dark);">Interpretación del Gráfico</h6>
+                    <p class="mb-0" style="line-height: 1.6;">
+                      Los <strong>puntos azules</strong> muestran los datos reales de estudiantes, 
+                      y la <strong>línea roja</strong> representa las predicciones del modelo entrenado. 
+                      La proximidad entre puntos y línea indica la precisión del modelo.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>      </div>
+    </section>
+
+    <!-- Model Equation Section -->
+    <section class="mb-5">
+      <div class="text-center mb-4">
+        <h2 class="h3 fw-bold mb-2">Ecuación del Modelo</h2>
+        <p class="text-muted">Fórmula matemática utilizada para las predicciones</p>
+      </div>      <div class="card border-0 shadow-lg">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--warning-color), #b45309); color: white;">
+          <h5 class="mb-0 fw-bold">
+            <i class="fas fa-function me-2"></i>Regresión Lineal Múltiple
+          </h5>
+        </div>
+          <div class="card-body p-4">
+            <!-- Equation Display -->
+            <div class="text-center p-4 mb-4" style="background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: var(--radius-lg); color: #e2e8f0; font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; border: 1px solid #334155;">
+              <div style="font-size: 1.2rem; line-height: 2; font-weight: 500;">
+                <span style="color: #22d3ee; font-weight: 600;">{{ descripcion_dataset.target }}</span> = 
+                <span style="color: #34d399; font-weight: 600;">{{ "%.3f"|format(descripcion_dataset.intercepto) }}</span><br>
+                <span style="color: #cbd5e1;">+</span> <span style="color: #fbbf24; font-weight: 600;">({{ "%.3f"|format(descripcion_dataset.coeficientes[descripcion_dataset.features[0]]) }})</span> × <span style="color: #60a5fa;">{{ descripcion_dataset.features[0] }}</span><br>
+                <span style="color: #cbd5e1;">+</span> <span style="color: #fbbf24; font-weight: 600;">({{ "%.3f"|format(descripcion_dataset.coeficientes[descripcion_dataset.features[1]]) }})</span> × <span style="color: #60a5fa;">{{ descripcion_dataset.features[1] }}</span>
+              </div>
+            </div>
+            
+            <!-- Interpretation Section -->
+            <div class="alert alert-info border-0" style="background: linear-gradient(135deg, rgba(8, 145, 178, 0.1), rgba(14, 116, 144, 0.1)); border-left: 4px solid var(--accent-color) !important;">
+              <div class="d-flex align-items-start">
+                <div class="me-3">
+                  <i class="fas fa-lightbulb" style="color: var(--accent-color); font-size: 1.2rem;"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-2" style="color: var(--accent-dark);">
+                    <i class="fas fa-chart-line me-2"></i>Interpretación de Coeficientes
+                  </h6>
+                  <p class="mb-0" style="line-height: 1.6;">
+                    <strong>Horas de Estudio:</strong> Cada hora adicional de estudio aumenta la nota en 
+                    <span class="badge badge-success mx-1">{{ "%.3f"|format(descripcion_dataset.coeficientes[descripcion_dataset.features[0]]) }} puntos</span><br>
+                    <strong>Horas de Sueño:</strong> Cada hora adicional de sueño aumenta la nota en 
+                    <span class="badge badge-primary mx-1">{{ "%.3f"|format(descripcion_dataset.coeficientes[descripcion_dataset.features[1]]) }} puntos</span>
+                  </p>
+                </div>            </div>
           </div>
         </div>
       </div>
+    </section>
+  </div>    <!-- Model Performance Section -->
+    <section class="mb-5">
+      <div class="text-center mb-4">
+        <h2 class="h3 fw-bold mb-2">Rendimiento del Modelo</h2>
+        <p class="text-muted">Métricas de evaluación y calidad predictiva</p>
+      </div>
 
-      <div class="col-12 col-lg-5">
-        <div class="card h-100">
-          <div class="card-header">Ingresar datos nuevos</div>
-          <div class="card-body">
-            <form method="POST" action="{{ url_for('regresion_ejercicio') }}">
+      <div class="card border-0 shadow-lg">
+        <div class="card-header" style="background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark)); color: white;">
+          <h5 class="mb-0 fw-bold">
+            <i class="fas fa-chart-bar me-2"></i>Estadísticas del Modelo
+          </h5>
+        </div>
+      <div class="card-body p-4">
+        <div class="row g-4">
+          <!-- R² Score -->
+          <div class="col-md-3">
+            <div class="text-center p-4 h-100" style="background: linear-gradient(135deg, rgba(30, 64, 175, 0.1), rgba(30, 64, 175, 0.05)); border-radius: var(--radius-lg); border: 2px solid rgba(30, 64, 175, 0.2);">
               <div class="mb-3">
-                <label class="form-label">Horas de estudio</label>
-                <input type="number" step="any" class="form-control" name="x1" placeholder="Ej: 5" value="{{ valores.x1 if valores }}">
+                <i class="fas fa-star" style="font-size: 2rem; color: var(--primary-color);"></i>
               </div>
+              <div class="h2 fw-bold text-primary mb-2">{{ descripcion_dataset.r2 }}</div>
+              <h6 class="text-primary mb-1 fw-semibold">Coeficiente R²</h6>
+              <small class="text-muted">Bondad del ajuste</small>
+            </div>
+          </div>
+          
+          <!-- Data Records -->
+          <div class="col-md-3">
+            <div class="text-center p-4 h-100" style="background: linear-gradient(135deg, rgba(5, 150, 105, 0.1), rgba(5, 150, 105, 0.05)); border-radius: var(--radius-lg); border: 2px solid rgba(5, 150, 105, 0.2);">
               <div class="mb-3">
-                <label class="form-label">Horas de sueño</label>
-                <input type="number" step="any" class="form-control" name="x2" placeholder="Ej: 8" value="{{ valores.x2 if valores }}">
+                <i class="fas fa-database" style="font-size: 2rem; color: var(--success-color);"></i>
               </div>
-              <button type="submit" class="btn btn-primary">Predecir</button>
-            </form>
-
-            {% if prediccion is not none %}
-              <hr>
-              <div class="alert alert-info mb-0">
-                <strong>Predicción de nota final:</strong> {{ prediccion }}
+              <div class="h2 fw-bold text-success mb-2">{{ descripcion_dataset.filas }}</div>
+              <h6 class="text-success mb-1 fw-semibold">Registros</h6>
+              <small class="text-muted">Datos de entrenamiento</small>
+            </div>
+          </div>
+          
+          <!-- Variables -->
+          <div class="col-md-3">
+            <div class="text-center p-4 h-100" style="background: linear-gradient(135deg, rgba(8, 145, 178, 0.1), rgba(8, 145, 178, 0.05)); border-radius: var(--radius-lg); border: 2px solid rgba(8, 145, 178, 0.2);">
+              <div class="mb-3">
+                <i class="fas fa-sliders" style="font-size: 2rem; color: var(--accent-color);"></i>
               </div>
-            {% endif %}
+              <div class="h2 fw-bold text-info mb-2">2</div>
+              <h6 class="text-info mb-1 fw-semibold">Variables</h6>
+              <small class="text-muted">Predictoras (X₁, X₂)</small>
+            </div>
           </div>
-        </div>
+          
+          <!-- Target -->
+          <div class="col-md-3">
+            <div class="text-center p-4 h-100" style="background: linear-gradient(135deg, rgba(217, 119, 6, 0.1), rgba(217, 119, 6, 0.05)); border-radius: var(--radius-lg); border: 2px solid rgba(217, 119, 6, 0.2);">
+              <div class="mb-3">
+                <i class="fas fa-bullseye" style="font-size: 2rem; color: var(--warning-color);"></i>
+              </div>
+              <div class="h2 fw-bold text-warning mb-2">1</div>
+              <h6 class="text-warning mb-1 fw-semibold">Objetivo</h6>
+              <small class="text-muted">Nota Final (Y)</small>
+            </div>
+          </div>        </div>
+      </div>
+    </section>
 
-        <div class="card mt-3">
-          <div class="card-header">Ecuación estimada</div>
-          <div class="card-body">
-            <code>
-              {{ descripcion_dataset.target }} =
-              {{ descripcion_dataset.intercepto }}
-              + ({{ descripcion_dataset.coeficientes[descripcion_dataset.features[0]] }})·{{ descripcion_dataset.features[0] }}
-              + ({{ descripcion_dataset.coeficientes[descripcion_dataset.features[1]] }})·{{ descripcion_dataset.features[1] }}
-            </code>
-          </div>
+    <!-- Next Steps Section -->
+    <section class="mb-5">
+    <div class="text-center py-5" style="background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary)); border-radius: var(--radius-xl); border: 2px solid var(--border-color); box-shadow: var(--card-shadow-lg);">
+      <div class="mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
+             style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; font-size: 2rem; box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);">
+          <i class="fas fa-rocket"></i>
         </div>
       </div>
-    </div>
+      
+      <h3 class="fw-bold mb-3" style="color: var(--text-primary);">¿Quieres explorar más algoritmos?</h3>
+      <p class="text-muted mb-4" style="max-width: 600px; margin: 0 auto;">
+        Continúa tu aprendizaje con otros modelos de Machine Learning y descubre sus aplicaciones en casos reales.
+      </p>
+      
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('r_logistica_ejercicio') }}" class="btn btn-success hover-lift">
+          <i class="fas fa-project-diagram me-2"></i>Regresión Logística
+        </a>
+        <a href="{{ url_for('clasificacion_ejercicio') }}" class="btn btn-warning hover-lift">
+          <i class="fas fa-sitemap me-2"></i>Clasificación
+        </a>
+        <a href="{{ url_for('casos_view') }}" class="btn btn-secondary hover-lift">
+          <i class="fas fa-briefcase me-2"></i>Casos Reales
+        </a>      </div>
+    </section>
+
   </main>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Enhanced form interactions
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('predictionForm');
+      const inputs = form.querySelectorAll('input[type="number"]');
+      
+      // Add focus effects to inputs
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.style.borderColor = 'var(--primary-color)';
+          this.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.style.borderColor = 'var(--border-color)';
+          this.style.boxShadow = 'none';
+        });
+        
+        // Validation on input
+        input.addEventListener('input', function() {
+          const value = parseFloat(this.value);
+          const max = parseFloat(this.getAttribute('max'));
+          const min = parseFloat(this.getAttribute('min'));
+          
+          if (value > max || value < min) {
+            this.style.borderColor = 'var(--error-color)';
+          } else {
+            this.style.borderColor = 'var(--success-color)';
+          }
+        });
+      });
+
+      // Form submission with loading state
+      form.addEventListener('submit', function() {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Calculando...';
+        submitBtn.disabled = true;
+        
+        // Re-enable after 3 seconds as fallback
+        setTimeout(() => {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }, 3000);
+      });
+
+      // Add smooth animations
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.6s ease';
+        
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 100);
+      });
+    });
+  </script>
 </body>
 </html>

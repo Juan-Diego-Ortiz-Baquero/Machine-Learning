@@ -2,25 +2,356 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Casos de uso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Casos de Uso Reales - Machine Learning Platform</title>
+  <meta name="description" content="Explora casos reales de implementación de Machine Learning en empresas líderes como Netflix, Amazon, Google y más.">
+  
+  <!-- Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
 
-  {% include 'navbar.html' %}
-
-  <main class="container">
-    <h1 class="mb-4">Casos de uso</h1>
-    <div class="list-group">
-      {% for c in casos %}
-        <a href="{{ url_for('caso', id=c.id) }}" class="list-group-item list-group-item-action">
-          <h5 class="mb-1">{{ c.problema }}</h5>
-          <small>{{ c.sector }} — {{ c.organizacion }}</small>
-        </a>
-      {% endfor %}
+  <!-- Enhanced Navigation -->
+  {% include 'navbar.html' %}  <!-- Hero Section -->
+  <section class="hero-section" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 4rem 0; position: relative; overflow: hidden;">
+    <!-- Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.08; background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+    
+    <div class="container text-center position-relative">
+      <!-- Icon -->
+      <div class="mb-4 animate-fade-in-up" style="animation-delay: 0.1s;">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-full mb-3" 
+             style="width: 100px; height: 100px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+          <i class="fas fa-briefcase" style="font-size: 2.5rem; color: white;"></i>
+        </div>
+      </div>
+      
+      <!-- Title -->
+      <h1 class="display-2 fw-bold mb-4 animate-fade-in-up" style="animation-delay: 0.2s; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        Casos de Uso Reales
+      </h1>
+      
+      <!-- Subtitle -->
+      <p class="lead mb-5 animate-fade-in-up" style="animation-delay: 0.3s; max-width: 700px; margin: 0 auto; font-size: 1.25rem; line-height: 1.6; color: rgba(255, 255, 255, 0.95);">
+        Descubre cómo empresas líderes implementan Machine Learning para resolver problemas complejos 
+        y generar valor de negocio medible
+      </p>
+      
+      <!-- Badges -->
+      <div class="d-flex justify-content-center gap-3 flex-wrap animate-fade-in-up" style="animation-delay: 0.4s;">
+        <span class="badge px-4 py-2" style="background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem; font-weight: 600; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+          <i class="fas fa-chart-bar me-2"></i>Métricas Reales
+        </span>
+        <span class="badge px-4 py-2" style="background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem; font-weight: 600; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+          <i class="fas fa-building me-2"></i>Empresas Fortune 500
+        </span>
+        <span class="badge px-4 py-2" style="background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem; font-weight: 600; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+          <i class="fas fa-book me-2"></i>Referencias Académicas
+        </span>
+      </div>
     </div>
-  </main>
+  </section>  <!-- Cases Grid -->
+  <main class="container py-5">
+    <!-- Section Header -->
+    <div class="text-center mb-5">
+      <h2 class="h1 fw-bold mb-3">Casos de Empresas Líderes</h2>
+      <p class="lead text-muted">Implementaciones reales con métricas y resultados medibles</p>
+    </div>
 
+    <div class="row g-4">
+      {% for c in casos %}
+        <div class="col-md-6 col-lg-4 animate-fade-in-up" style="--animation-delay: {{ loop.index0 * 0.1 }}s;">
+          <a href="{{ url_for('caso', id=c.id) }}" class="text-decoration-none h-100">
+            <div class="card card-interactive h-100 shadow hover-lift">
+              
+              <!-- Card Header with Sector Icon -->
+              <div class="card-header text-center py-4" style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); border-bottom: 1px solid var(--border-color);">
+                <div class="mb-3">
+                  {% if c.sector == 'Entretenimiento' %}
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; font-size: 1.8rem; box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3);">
+                      <i class="fas fa-play"></i>
+                    </div>
+                  {% elif c.sector == 'E-commerce' %}
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--warning-color), #b45309); color: white; font-size: 1.8rem; box-shadow: 0 6px 15px rgba(217, 119, 6, 0.3);">
+                      <i class="fas fa-shopping-cart"></i>
+                    </div>
+                  {% elif c.sector == 'Finanzas' %}
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--success-color), #047857); color: white; font-size: 1.8rem; box-shadow: 0 6px 15px rgba(5, 150, 105, 0.3);">
+                      <i class="fas fa-dollar-sign"></i>
+                    </div>
+                  {% elif c.sector == 'Tecnología' %}
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; font-size: 1.8rem; box-shadow: 0 6px 15px rgba(30, 64, 175, 0.3);">
+                      <i class="fas fa-microchip"></i>
+                    </div>
+                  {% elif c.sector == 'Salud' %}
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 1.8rem; box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);">
+                      <i class="fas fa-heartbeat"></i>
+                    </div>
+                  {% elif c.sector == 'Transporte' %}
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--accent-color), var(--accent-dark)); color: white; font-size: 1.8rem; box-shadow: 0 6px 15px rgba(8, 145, 178, 0.3);">
+                      <i class="fas fa-car"></i>
+                    </div>
+                  {% else %}
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark)); color: white; font-size: 1.8rem; box-shadow: 0 6px 15px rgba(71, 85, 105, 0.3);">
+                      <i class="fas fa-cog"></i>
+                    </div>
+                  {% endif %}
+                </div>
+                <span class="badge badge-primary px-3 py-2" style="font-size: 0.85rem; font-weight: 600;">{{ c.sector }}</span>
+              </div>
+
+              <!-- Card Body -->
+              <div class="card-body p-4">
+                <!-- Problem Title -->
+                <h5 class="card-title fw-bold mb-3 text-primary" style="line-height: 1.4; font-size: 1.15rem;">
+                  {{ c.problema }}
+                </h5>
+                
+                <!-- Organization -->
+                <div class="mb-3">
+                  <div class="d-flex align-items-center text-secondary">
+                    <i class="fas fa-building me-2" style="color: var(--primary-color); width: 16px;"></i>
+                    <strong style="font-size: 0.95rem;">{{ c.organizacion }}</strong>
+                  </div>
+                </div>
+
+                <!-- Algorithm -->
+                <div class="mb-3">
+                  <div class="d-flex align-items-start text-secondary">
+                    <i class="fas fa-robot me-2 mt-1" style="color: var(--success-color); width: 16px; font-size: 0.9rem;"></i>
+                    <span style="font-size: 0.9rem; line-height: 1.5;">{{ c.algoritmo|truncate(80, True) }}</span>
+                  </div>
+                </div>
+
+                <!-- Task -->
+                <div class="mb-4">
+                  <div class="d-flex align-items-start text-secondary">
+                    <i class="fas fa-target me-2 mt-1" style="color: var(--warning-color); width: 16px; font-size: 0.9rem;"></i>
+                    <span style="font-size: 0.9rem; line-height: 1.5;">{{ c.tarea }}</span>
+                  </div>
+                </div>                <!-- Metrics Badge -->
+                {% if c.metrica %}
+                  <div class="mb-3">
+                    <span class="badge badge-success px-2 py-1" style="font-size: 0.75rem;">
+                      <i class="fas fa-chart-bar me-1"></i>Métricas disponibles
+                    </span>
+                  </div>
+                {% endif %}
+
+                <!-- Action Button -->
+                <div class="d-flex align-items-center justify-content-between mt-auto">
+                  <small class="text-muted">
+                    <i class="fas fa-clock me-1"></i>Lectura: ~5 min
+                  </small>
+                  <span class="btn btn-sm btn-outline-primary">
+                    Ver detalles <i class="fas fa-arrow-right ms-1"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>    <!-- No cases fallback -->
+    {% if not casos %}
+      <div class="text-center py-5">
+        <div class="mb-4">
+          <i class="fas fa-search" style="font-size: 4rem; color: var(--text-muted);"></i>
+        </div>
+        <h3 class="text-muted">No hay casos disponibles</h3>
+        <p class="text-muted">Los casos de uso se están actualizando. Vuelve pronto.</p>
+      </div>
+    {% endif %}
+
+    <!-- Call to Action Section -->
+    <section class="mt-5 py-5" style="background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary)); border-radius: var(--radius-xl); border: 2px solid var(--border-color); box-shadow: var(--card-shadow-lg);">
+      <div class="text-center">
+        <div class="mb-4">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
+               style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; font-size: 2rem; box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);">
+            <i class="fas fa-rocket"></i>
+          </div>
+        </div>
+        
+        <h3 class="fw-bold mb-3" style="color: var(--text-primary);">¿Listo para implementar tu propio modelo?</h3>
+        <p class="text-muted mb-4" style="max-width: 600px; margin: 0 auto;">
+          Pasa de la teoría a la práctica con nuestros ejercicios interactivos. 
+          Aprende implementando algoritmos reales con datos del mundo empresarial.
+        </p>
+        
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="{{ url_for('regresion_ejercicio') }}" class="btn btn-primary hover-lift">
+            <i class="fas fa-chart-line me-2"></i>Regresión Lineal
+          </a>
+          <a href="{{ url_for('r_logistica_ejercicio') }}" class="btn btn-success hover-lift">
+            <i class="fas fa-project-diagram me-2"></i>Regresión Logística
+          </a>
+          <a href="{{ url_for('clasificacion_ejercicio') }}" class="btn btn-warning hover-lift">
+            <i class="fas fa-sitemap me-2"></i>Clasificación
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- Footer -->
+  <footer class="py-4 mt-5" style="background: var(--bg-tertiary); border-top: 1px solid var(--border-color);">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p class="mb-0 text-muted">
+            <i class="fas fa-university me-2"></i>
+            Universidad de Cundinamarca - Machine Learning Platform
+          </p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <p class="mb-0 text-muted">
+            <i class="fas fa-briefcase me-2"></i>
+            {{ casos|length }} casos de uso disponibles
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Enhanced card interactions with loading states
+    document.querySelectorAll('.card-interactive').forEach(card => {
+      // Hover effects
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-8px) scale(1.02)';
+        this.style.boxShadow = 'var(--card-hover-shadow)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+        this.style.boxShadow = 'var(--card-shadow-lg)';
+      });
+
+      // Loading animation for clicks
+      card.addEventListener('click', function(e) {
+        const button = this.querySelector('.btn-outline-primary');
+        if (button) {
+          button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Cargando...';
+          button.classList.add('disabled');
+        }
+        
+        // Add subtle loading overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255,255,255,0.8);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: var(--radius-xl);
+          z-index: 10;
+        `;
+        overlay.innerHTML = '<div class="spinner-border text-primary" role="status"></div>';
+        
+        this.style.position = 'relative';
+        this.appendChild(overlay);
+      });
+    });
+
+    // Smooth entrance animations on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Initialize animations
+    document.querySelectorAll('.animate-fade-in-up').forEach((el, index) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      el.style.transitionDelay = `${index * 0.1}s`;
+      observer.observe(el);
+    });
+
+    // Statistics counter animation
+    function animateCounter(element, target, duration = 2000) {
+      let start = 0;
+      const increment = target / (duration / 16);
+      
+      const timer = setInterval(() => {
+        start += increment;
+        element.textContent = Math.floor(start);
+        
+        if (start >= target) {
+          clearInterval(timer);
+          element.textContent = target;
+        }
+      }, 16);
+    }
+
+    // Accessibility improvements
+    document.querySelectorAll('.card-interactive').forEach(card => {
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `Ver detalles del caso: ${card.querySelector('.card-title').textContent}`);
+      
+      // Keyboard navigation
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
+      });
+      
+      // Focus indicators
+      card.addEventListener('focus', function() {
+        this.style.outline = '2px solid var(--primary-color)';
+        this.style.outlineOffset = '2px';
+      });
+      
+      card.addEventListener('blur', function() {
+        this.style.outline = 'none';
+      });
+    });
+
+    // Performance optimization: lazy load images if any
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.classList.remove('lazy');
+            imageObserver.unobserve(img);
+          }
+        });
+      });
+
+      document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+  </script>
 </body>
 </html>

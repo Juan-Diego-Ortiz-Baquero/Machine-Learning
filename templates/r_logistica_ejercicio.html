@@ -2,192 +2,460 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Regresión logística — Predicción de abandono escolar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regresión Logística - Ejercicio Práctico | ML Platform</title>
+  <meta name="description" content="Ejercicio interactivo de regresión logística para predecir el abandono escolar usando múltiples variables académicas y sociales.">
+  
+  <!-- Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
-
+<body style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh;">
   {% include 'navbar.html' %}
 
-  <main class="container">
-    <h1 class="mb-4">Predicción de abandono escolar</h1>
-
-    <p class="text-muted">
-      Este modelo utiliza regresión logística para predecir si un estudiante abandonará sus estudios.
-      Las variables consideradas son: <strong>Horas de estudio semanales</strong>, <strong>Número de fallos previos</strong>, <strong>Nota final</strong>, <strong>Apoyo escolar</strong>, <strong>Apoyo familiar</strong>, <strong>Acceso a internet</strong> y <strong>Deseo de educación superior</strong>.
-    </p>
-
-    <!-- Tarjeta: Explicación del dataset -->
-    <div class="card mb-4 border-info">
-      <div class="card-header bg-info text-white">Explicación del dataset</div>
-      <div class="card-body">
-        <p class="mb-2">
-          La variable objetivo es <strong>Dropped_Out</strong>: <code>1 = Sí</code>, <code>0 = No</code>.<br>
-          El modelo fue entrenado con {{ descripcion_dataset.filas }} registros.<br>
-          Exactitud obtenida: {{ descripcion_dataset.accuracy }}.
-        </p>
-        <hr>
-        <p class="mb-1"><strong>Predicción de abandono universitario</strong></p>
-        <p class="mb-1">
-          Variables originales: Promedio académico, Asistencia a clases, Horas de estudio, Carrera (categórica).<br>
-          Objetivo: ¿Abandona el estudiante? (Sí/No).<br>
-          Autor del trabajo: Juan Ortiz.
-        </p>
-        <p class="mb-1">
-          <em>Nota:</em> En el dataset original de Kaggle no existe la variable 'Promedio académico' tal cual,
-          por lo que se reemplazó por 'Final_Grade' (nota final) como aproximación.
-        </p>
-        <p class="mb-0">
-          <strong>Fuente de datos:</strong><br>
-          Abdullah0a. (2023). <em>Student Dropout Analysis and Prediction Dataset</em> [Conjunto de datos]. Kaggle. 
-          <a href="https://www.kaggle.com/datasets/abdullah0a/student-dropout-analysis-and-prediction-dataset?resource=download" target="_blank">
-            https://www.kaggle.com/datasets/abdullah0a/student-dropout-analysis-and-prediction-dataset?resource=download
+  <!-- Breadcrumb -->
+  <div class="container py-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('home') }}" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>Inicio
           </a>
-        </p>
-      </div>
-    </div>
-
-    <!-- Tarjeta: Flujo del modelo -->
-    <div class="card mb-4 border-secondary">
-      <div class="card-header bg-secondary text-white">Flujo general del modelo</div>
-      <div class="card-body">
-        <pre class="mb-0">{{ workflow_description }}</pre>
-      </div>
-    </div>
-
-    <div class="row g-4">
-    <!-- Tarjeta: Reporte de clasificación -->
-<div class="card mb-4 border-success">
-  <div class="card-header bg-success text-white">Reporte de clasificación</div>
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-sm table-striped table-bordered align-middle mb-0">
-        <thead class="table-secondary">
-          <tr>
-            <th>Clase</th>
-            <th>Precisión</th>
-            <th>Recall</th>
-            <th>F1-score</th>
-            <th>Support</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if report %}
-            {% for clase, valores in report.items() %}
-              {% if clase not in ['accuracy', 'macro avg', 'weighted avg'] %}
-              <tr>
-                <td>{{ clase }}</td>
-                <td>{{ '%.3f'|format(valores['precision']) }}</td>
-                <td>{{ '%.3f'|format(valores['recall']) }}</td>
-                <td>{{ '%.3f'|format(valores['f1-score']) }}</td>
-                <td>{{ valores['support'] }}</td>
-              </tr>
-              {% endif %}
-            {% endfor %}
-            {% if report.get('accuracy') %}
-            <tr class="table-light">
-              <td><strong>Accuracy</strong></td>
-              <td colspan="3"></td>
-              <td>{{ '%.3f'|format(report['accuracy']) }}</td>
-            </tr>
-            {% endif %}
-            {% for avg in ['macro avg', 'weighted avg'] %}
-              {% if report.get(avg) %}
-              <tr>
-                <td>{{ avg }}</td>
-                <td>{{ '%.3f'|format(report[avg]['precision']) }}</td>
-                <td>{{ '%.3f'|format(report[avg]['recall']) }}</td>
-                <td>{{ '%.3f'|format(report[avg]['f1-score']) }}</td>
-                <td>{{ report[avg]['support'] }}</td>
-              </tr>
-              {% endif %}
-            {% endfor %}
-          {% else %}
-            <tr><td colspan="5" class="text-muted">No hay datos de reporte.</td></tr>
-          {% endif %}
-        </tbody>
-      </table>
-    </div>
+        </li>        <li class="breadcrumb-item">
+          <a href="{{ url_for('r_logistica_conceptos') }}" class="text-decoration-none">
+            <i class="fas fa-project-diagram me-1"></i>Regresión Logística
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Ejercicio Práctico</li>
+      </ol>
+    </nav>
   </div>
-</div>
-      <!-- Visualización -->
-      <div class="col-12 col-lg-7">
-        <div class="card h-100">
-          <div class="card-header">Matriz de confusión</div>
-          <div class="card-body">
-            <img class="img-fluid" src="data:image/png;base64, {{ confusion_png }}" alt="Matriz de confusión">
-            <div class="text-muted small mt-2">
-              Filas = Reales (0 = No, 1 = Sí) · Columnas = Predicho (0 = No, 1 = Sí)
-            </div>  
+
+  <!-- Header Section -->
+  <section class="py-4" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 30px 30px;"></div>
+    
+    <div class="container position-relative">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="display-5 fw-bold mb-3">
+            <i class="fas fa-graduation-cap me-3"></i>
+            Predicción de Abandono Escolar
+          </h1>
+          <p class="lead mb-3" style="opacity: 0.9;">
+            Modelo de regresión logística entrenado para predecir si un estudiante abandonará sus estudios 
+            basado en variables académicas y socioeconómicas
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-light text-dark px-3 py-2">
+              <i class="fas fa-brain me-1"></i>Regresión Logística
+            </span>
+            <span class="badge bg-light text-dark px-3 py-2">
+              <i class="fas fa-chart-bar me-1"></i>Clasificación Binaria
+            </span>
+            <span class="badge bg-light text-dark px-3 py-2">
+              <i class="fas fa-percentage me-1"></i>{{ "%.1f"|format(descripcion_dataset.accuracy * 100) }}% Precisión
+            </span>
+          </div>
+        </div>
+        <div class="col-lg-4 text-center">
+          <div class="d-inline-flex align-items-center justify-content-center" 
+               style="width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;">
+            <i class="fas fa-user-graduate" style="font-size: 4rem;"></i>
           </div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Formulario -->
+  <main class="container py-5">    <!-- Dataset Information Card -->
+    <div class="card border-0 shadow-sm mb-4 animate-fade-in-up">
+      <div class="card-header bg-gradient text-white d-flex align-items-center" 
+           style="background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;">
+        <i class="fas fa-database me-3" style="font-size: 1.5rem;"></i>
+        <h3 class="h5 mb-0 fw-bold">Información del Dataset</h3>
+      </div>
+      <div class="card-body p-4">
+        <div class="row g-4 mb-4">
+          <div class="col-md-4">
+            <div class="text-center p-3 rounded" style="background: rgba(59, 130, 246, 0.1);">
+              <div class="h3 fw-bold text-primary mb-1">{{ descripcion_dataset.filas }}</div>
+              <small class="text-muted fw-medium">Registros Totales</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center p-3 rounded" style="background: rgba(16, 185, 129, 0.1);">
+              <div class="h3 fw-bold text-success mb-1">{{ "%.1f"|format(descripcion_dataset.accuracy * 100) }}%</div>
+              <small class="text-muted fw-medium">Precisión del Modelo</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center p-3 rounded" style="background: rgba(245, 158, 11, 0.1);">
+              <div class="h3 fw-bold text-warning mb-1">7</div>
+              <small class="text-muted fw-medium">Variables Predictoras</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-primary border-0" style="background: rgba(59, 130, 246, 0.1);">
+          <div class="d-flex align-items-start">
+            <i class="fas fa-info-circle me-3 mt-1 text-primary"></i>
+            <div>
+              <h6 class="fw-bold mb-2">Variable Objetivo: Dropped_Out</h6>
+              <p class="mb-2">
+                <span class="badge bg-success me-2">0 = No abandona</span>
+                <span class="badge bg-danger">1 = Sí abandona</span>
+              </p>
+              <p class="mb-0 small">
+                El modelo utiliza variables académicas (horas de estudio, nota final, ausencias) 
+                y socioeconómicas (apoyo familiar, acceso a internet) para realizar las predicciones.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <h6 class="fw-bold text-primary mb-2">
+              <i class="fas fa-graduation-cap me-2"></i>Variables Académicas
+            </h6>
+            <ul class="list-unstyled small mb-0">
+              <li class="mb-1">• Horas de estudio semanales</li>
+              <li class="mb-1">• Número de ausencias</li>
+              <li class="mb-1">• Nota final del curso</li>
+            </ul>
+          </div>
+          <div class="col-lg-6">
+            <h6 class="fw-bold text-success mb-2">
+              <i class="fas fa-users me-2"></i>Variables Socioeconómicas
+            </h6>
+            <ul class="list-unstyled small mb-0">
+              <li class="mb-1">• Apoyo escolar disponible</li>
+              <li class="mb-1">• Apoyo familiar recibido</li>
+              <li class="mb-1">• Acceso a internet en casa</li>
+              <li class="mb-1">• Aspiraciones de educación superior</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="my-4">
+        
+        <div class="small text-muted">
+          <p class="mb-2">
+            <strong>Fuente de datos:</strong> Abdullah0a. (2023). 
+            <em>Student Dropout Analysis and Prediction Dataset</em> [Conjunto de datos]. Kaggle.
+          </p>
+          <p class="mb-0">
+            <strong>Nota:</strong> Dataset adaptado para fines educativos. La variable 'Final_Grade' 
+            se utiliza como aproximación del promedio académico original.
+          </p>
+        </div>
+      </div>
+    </div>    <!-- Model Workflow Card -->
+    <div class="card border-0 shadow-sm mb-4 animate-fade-in-up" style="animation-delay: 0.1s;">
+      <div class="card-header bg-gradient text-white d-flex align-items-center" 
+           style="background: linear-gradient(135deg, #6b7280, #4b5563) !important;">
+        <i class="fas fa-cogs me-3" style="font-size: 1.5rem;"></i>
+        <h3 class="h5 mb-0 fw-bold">Flujo del Modelo</h3>
+      </div>
+      <div class="card-body p-4">        <!-- Fixed: Better contrast for code block -->        <div class="code-block" data-language="python">
+          <pre class="mb-0" style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6; color: #1e293b; padding: var(--space-lg);">{{ workflow_description }}</pre>
+        </div>
+      </div>
+    </div>    <!-- Performance Metrics -->
+    <div class="card border-0 shadow-sm mb-4 animate-fade-in-up" style="animation-delay: 0.2s;">
+      <div class="card-header bg-gradient text-white d-flex align-items-center" 
+           style="background: linear-gradient(135deg, #10b981, #059669) !important;">
+        <i class="fas fa-chart-bar me-3" style="font-size: 1.5rem;"></i>
+        <h3 class="h5 mb-0 fw-bold">Métricas de Rendimiento</h3>
+      </div>
+      <div class="card-body p-4">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr style="background: rgba(16, 185, 129, 0.1);">
+                <th class="fw-bold">Clase</th>
+                <th class="fw-bold text-center">Precisión</th>
+                <th class="fw-bold text-center">Recall</th>
+                <th class="fw-bold text-center">F1-Score</th>
+                <th class="fw-bold text-center">Support</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if report %}
+                {% for clase, valores in report.items() %}
+                  {% if clase not in ['accuracy', 'macro avg', 'weighted avg'] %}
+                  <tr>
+                    <td class="fw-medium">
+                      {% if clase == '0' %}
+                        <span class="badge bg-success me-2">No Abandona</span>
+                      {% else %}
+                        <span class="badge bg-danger me-2">Abandona</span>
+                      {% endif %}
+                      ({{ clase }})
+                    </td>
+                    <td class="text-center">{{ '%.3f'|format(valores['precision']) }}</td>
+                    <td class="text-center">{{ '%.3f'|format(valores['recall']) }}</td>
+                    <td class="text-center">{{ '%.3f'|format(valores['f1-score']) }}</td>
+                    <td class="text-center">{{ valores['support'] }}</td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+                
+                {% if report.get('accuracy') %}
+                <tr style="background: rgba(59, 130, 246, 0.1);" class="fw-bold">
+                  <td><i class="fas fa-bullseye me-2 text-primary"></i>Precisión General</td>
+                  <td colspan="3" class="text-center">{{ '%.1f'|format(report['accuracy'] * 100) }}%</td>
+                  <td class="text-center">-</td>
+                </tr>
+                {% endif %}
+                
+                {% for avg in ['macro avg', 'weighted avg'] %}
+                  {% if report.get(avg) %}
+                  <tr class="table-light">
+                    <td class="fw-medium">
+                      <i class="fas fa-calculator me-2 text-secondary"></i>{{ avg|title }}
+                    </td>
+                    <td class="text-center">{{ '%.3f'|format(report[avg]['precision']) }}</td>
+                    <td class="text-center">{{ '%.3f'|format(report[avg]['recall']) }}</td>
+                    <td class="text-center">{{ '%.3f'|format(report[avg]['f1-score']) }}</td>
+                    <td class="text-center">{{ report[avg]['support'] }}</td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">
+                    <i class="fas fa-info-circle me-2"></i>No hay datos de reporte disponibles
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="row g-3 mt-3">
+          <div class="col-md-4">
+            <div class="text-center p-3 rounded" style="background: rgba(16, 185, 129, 0.1);">
+              <i class="fas fa-target text-success mb-2" style="font-size: 1.5rem;"></i>
+              <div class="small fw-medium text-success">Precisión</div>
+              <div class="small text-muted">TP/(TP+FP)</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center p-3 rounded" style="background: rgba(245, 158, 11, 0.1);">
+              <i class="fas fa-search text-warning mb-2" style="font-size: 1.5rem;"></i>
+              <div class="small fw-medium text-warning">Recall</div>
+              <div class="small text-muted">TP/(TP+FN)</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center p-3 rounded" style="background: rgba(59, 130, 246, 0.1);">
+              <i class="fas fa-balance-scale text-primary mb-2" style="font-size: 1.5rem;"></i>
+              <div class="small fw-medium text-primary">F1-Score</div>
+              <div class="small text-muted">Media armónica</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">      <!-- Confusion Matrix Visualization -->
+      <div class="col-12 col-lg-7">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.3s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center justify-content-between" 
+               style="background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-th me-3" style="font-size: 1.2rem;"></i>
+              <h5 class="mb-0 fw-bold">Matriz de Confusión</h5>
+            </div>
+            <span class="badge bg-light text-dark">
+              <i class="fas fa-chart-area me-1"></i>Visualización
+            </span>
+          </div>
+          <div class="card-body p-4 text-center">
+            <div class="confusion-matrix-container mb-3">
+              <img class="img-fluid rounded shadow-sm" 
+                   src="data:image/png;base64, {{ confusion_png }}" 
+                   alt="Matriz de confusión del modelo de regresión logística"
+                   style="max-height: 400px; width: auto;">
+            </div>
+            
+            <div class="alert alert-info border-0 text-start" style="background: rgba(59, 130, 246, 0.1);">
+              <div class="d-flex align-items-start">
+                <i class="fas fa-info-circle me-3 mt-1 text-primary"></i>
+                <div>
+                  <h6 class="fw-bold mb-2">Interpretación de la Matriz</h6>
+                  <div class="small">
+                    <p class="mb-2">
+                      <strong>Filas:</strong> Valores reales (0 = No abandona, 1 = Abandona)<br>
+                      <strong>Columnas:</strong> Predicciones (0 = No abandona, 1 = Abandona)
+                    </p>
+                    <div class="row g-2">
+                      <div class="col-6">
+                        <div class="p-2 rounded" style="background: rgba(16, 185, 129, 0.1);">
+                          <strong class="text-success">Verdaderos Positivos/Negativos:</strong><br>
+                          <small>Predicciones correctas (diagonal)</small>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="p-2 rounded" style="background: rgba(239, 68, 68, 0.1);">
+                          <strong class="text-danger">Falsos Positivos/Negativos:</strong><br>
+                          <small>Predicciones incorrectas (fuera diagonal)</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      <!-- Interactive Prediction Form -->
       <div class="col-12 col-lg-5">
-        <div class="card h-100">
-          <div class="card-header">Ingresar datos del estudiante</div>
-          <div class="card-body">
-            <form method="POST" action="{{ url_for('r_logistica_ejercicio') }}">
-              <div class="mb-3">
-                <label class="form-label">Horas de estudio semanales (Study_Time)</label>
-                <input type="number" step="any" class="form-control" name="Study_Time" placeholder="Ej: 3" value="{{ valores.Study_Time if valores }}">
+        <div class="card border-0 shadow-sm h-100 animate-fade-in-up" style="animation-delay: 0.4s;">
+          <div class="card-header bg-gradient text-white d-flex align-items-center" 
+               style="background: linear-gradient(135deg, #f59e0b, #d97706) !important;">
+            <i class="fas fa-user-edit me-3" style="font-size: 1.2rem;"></i>
+            <h5 class="mb-0 fw-bold">Predicción Interactiva</h5>
+          </div>
+          <div class="card-body p-4">
+            <form method="POST" action="{{ url_for('r_logistica_ejercicio') }}" class="prediction-form">
+              
+              <!-- Academic Variables Section -->
+              <div class="mb-4">
+                <h6 class="fw-bold text-primary mb-3">
+                  <i class="fas fa-graduation-cap me-2"></i>Variables Académicas
+                </h6>
+                
+                <div class="mb-3">
+                  <label class="form-label fw-medium">
+                    <i class="fas fa-clock me-2 text-primary"></i>Horas de estudio semanales
+                  </label>
+                  <input type="number" step="0.1" class="form-control form-control-modern" 
+                         name="Study_Time" placeholder="Ej: 15.5" 
+                         value="{{ valores.Study_Time if valores }}"
+                         min="0" max="50">
+                  <div class="form-text">Horas dedicadas al estudio por semana</div>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label fw-medium">
+                    <i class="fas fa-calendar-times me-2 text-warning"></i>Número de ausencias
+                  </label>
+                  <input type="number" step="1" class="form-control form-control-modern" 
+                         name="Number_of_Absences" placeholder="Ej: 3" 
+                         value="{{ valores.Number_of_Absences if valores }}"
+                         min="0" max="50">
+                  <div class="form-text">Ausencias acumuladas en el período</div>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label fw-medium">
+                    <i class="fas fa-star me-2 text-success"></i>Nota final
+                  </label>
+                  <input type="number" step="0.1" class="form-control form-control-modern" 
+                         name="Final_Grade" placeholder="Ej: 16.8" 
+                         value="{{ valores.Final_Grade if valores }}"
+                         min="0" max="20">
+                  <div class="form-text">Calificación final del curso (0-20)</div>
+                </div>
               </div>
-              <div class="mb-3">
-                <label class="form-label">Número de ausencias (Number_of_Absences)</label>
-                <input type="number" step="any" class="form-control" name="Number_of_Absences" placeholder="Ej: 1" value="{{ valores.Number_of_Absences if valores }}">
+
+              <!-- Social Variables Section -->
+              <div class="mb-4">
+                <h6 class="fw-bold text-success mb-3">
+                  <i class="fas fa-users me-2"></i>Variables Socioeconómicas
+                </h6>
+                
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-medium">
+                      <i class="fas fa-school me-2 text-info"></i>Apoyo escolar
+                    </label>
+                    <select class="form-select form-control-modern" name="School_Support">
+                      <option value="yes" {% if valores and valores.School_Support == 'yes' %}selected{% endif %}>Sí</option>
+                      <option value="no" {% if valores and valores.School_Support == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-medium">
+                      <i class="fas fa-home me-2 text-success"></i>Apoyo familiar
+                    </label>
+                    <select class="form-select form-control-modern" name="Family_Support">
+                      <option value="yes" {% if valores and valores.Family_Support == 'yes' %}selected{% endif %}>Sí</option>
+                      <option value="no" {% if valores and valores.Family_Support == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-medium">
+                      <i class="fas fa-wifi me-2 text-primary"></i>Acceso a internet
+                    </label>
+                    <select class="form-select form-control-modern" name="Internet_Access">
+                      <option value="yes" {% if valores and valores.Internet_Access == 'yes' %}selected{% endif %}>Sí</option>
+                      <option value="no" {% if valores and valores.Internet_Access == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-medium">
+                      <i class="fas fa-university me-2 text-warning"></i>Educación superior
+                    </label>
+                    <select class="form-select form-control-modern" name="Wants_Higher_Education">
+                      <option value="yes" {% if valores and valores.Wants_Higher_Education == 'yes' %}selected{% endif %}>Sí</option>
+                      <option value="no" {% if valores and valores.Wants_Higher_Education == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div class="mb-3">
-                <label class="form-label">Nota final (Final_Grade)</label>
-                <input type="number" step="any" class="form-control" name="Final_Grade" placeholder="Ej: 14" value="{{ valores.Final_Grade if valores }}">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Apoyo escolar (School_Support)</label>
-                <select class="form-select" name="School_Support">
-                  <option value="yes" {% if valores.School_Support == 'yes' %}selected{% endif %}>Sí</option>
-                  <option value="no" {% if valores.School_Support == 'no' %}selected{% endif %}>No</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Apoyo familiar (Family_Support)</label>
-                <select class="form-select" name="Family_Support">
-                  <option value="yes" {% if valores.Family_Support == 'yes' %}selected{% endif %}>Sí</option>
-                  <option value="no" {% if valores.Family_Support == 'no' %}selected{% endif %}>No</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Acceso a internet (Internet_Access)</label>
-                <select class="form-select" name="Internet_Access">
-                  <option value="yes" {% if valores.Internet_Access == 'yes' %}selected{% endif %}>Sí</option>
-                  <option value="no" {% if valores.Internet_Access == 'no' %}selected{% endif %}>No</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Desea educación superior (Wants_Higher_Education)</label>
-                <select class="form-select" name="Wants_Higher_Education">
-                  <option value="yes" {% if valores.Wants_Higher_Education == 'yes' %}selected{% endif %}>Sí</option>
-                  <option value="no" {% if valores.Wants_Higher_Education == 'no' %}selected{% endif %}>No</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary">Predecir abandono</button>
+
+              <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
+                <i class="fas fa-brain me-2"></i>Generar Predicción
+              </button>
             </form>
 
+            <!-- Prediction Results -->
             {% if prediccion is not none %}
-              <hr>
+            <div class="mt-4 pt-4 border-top">
               <div class="text-center">
-                <div class="h4 mb-1">Predicción:</div>
-                <div class="display-6">{{ prediccion.label }}</div>
-                <div class="text-muted">Probabilidad: {{ prediccion.probabilidad }}</div>
+                <h6 class="fw-bold text-primary mb-3">
+                  <i class="fas fa-chart-pie me-2"></i>Resultado de la Predicción
+                </h6>                  <!-- Enhanced: Improved contrast and design for prediction results -->                <div class="card shadow-lg border-0 mb-4 prediction-card {% if 'No' in prediccion.label %}prediction-success{% else %}prediction-danger{% endif %}">
+                  
+                  <div class="card-body p-4 text-center prediction-body {% if 'No' in prediccion.label %}prediction-success{% else %}prediction-danger{% endif %}">
+                    
+                    <div class="display-5 font-weight-bold mb-3 prediction-text {% if 'No' in prediccion.label %}text-success{% else %}text-danger{% endif %}">
+                      <i class="{% if 'No' in prediccion.label %}fas fa-graduation-cap{% else %}fas fa-exclamation-triangle{% endif %} me-3"></i>
+                      {{ prediccion.label }}
+                    </div>
+                    
+                    <div class="h4 mb-3" style="color: var(--text-primary);">
+                      <i class="fas fa-percentage me-2" style="color: var(--primary-color);"></i>
+                      <strong>{{ prediccion.probabilidad }}</strong>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="alert alert-info border-0 text-start small">
+                  <i class="fas fa-lightbulb me-2"></i>
+                  <strong>Interpretación:</strong> El modelo predice que este estudiante 
+                  {% if 'No' in prediccion.label %}<strong class="text-success">NO abandonará</strong>{% else %}<strong class="text-danger">SÍ abandonará</strong>{% endif %} 
+                  sus estudios con una confianza del {{ prediccion.probabilidad }}.
+                </div>
               </div>
+            </div>
             {% endif %}
 
           </div>
         </div>
-      </div>
-    </div>
+      </div>    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
